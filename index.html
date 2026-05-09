@@ -51,10 +51,40 @@
             animation: text-breathe 2.5s ease-in-out infinite;
         }
 
-        /* מניעת סימון טקסט במערכת (מוסיף לאבטחה) */
+        /* מניעת סימון טקסט במערכת */
         body {
             user-select: none;
             -webkit-user-select: none;
+        }
+
+        /* עיצוב סליידרים בהתאמה אישית לנגן שלנו */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: #60a5fa;
+            cursor: pointer;
+            margin-top: -4px;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
         }
     </style>
 </head>
@@ -64,29 +94,17 @@
     <div id="login-screen" class="min-h-screen bg-slate-950 flex items-center justify-center text-white relative z-[100]">
         <div class="bg-slate-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-800">
             <div class="flex items-center justify-center gap-4 mb-8">
-                <!-- לוגו ימני (hlogo) -->
-                <img src="hlogo.png" alt="לוגו ימני" class="max-h-12 w-auto max-w-[45%] object-contain">
-                
-                <!-- לוגו שמאלי (logo) -->
-                <img src="logo.png" alt="לוגו שמאלי" class="max-h-12 w-auto max-w-[45%] object-contain">
+                <img src="hlogo.png" alt="לוגו ימני" class="max-h-12 w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
+                <img src="logo.png" alt="לוגו שמאלי" class="max-h-12 w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
             </div>
             <h1 class="text-2xl font-bold text-center mb-8">כניסה למערכת הקורסים</h1>
             <form id="login-form" class="space-y-6" onsubmit="return handleLogin(event)">
                 <div>
                     <label class="block text-sm font-medium text-slate-400 mb-2">סיסמת גישה</label>
-                    <input
-                        type="password"
-                        id="password-input"
-                        class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors text-right"
-                        placeholder="הזן סיסמה..."
-                        dir="rtl"
-                    />
+                    <input type="password" id="password-input" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors text-right" placeholder="הזן סיסמה..." dir="rtl" />
                     <p id="error-message" class="text-red-400 text-sm mt-2 hidden"></p>
                 </div>
-                <button
-                    type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
-                >
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200">
                     הכנס למערכת
                 </button>
             </form>
@@ -98,24 +116,16 @@
         <!-- אזור הדר - לוגו -->
         <header class="bg-slate-900/50 border-b border-slate-800/50 backdrop-blur-sm h-16 flex-shrink-0">
             <div class="max-w-[1600px] h-full mx-auto px-6 flex items-center justify-between">
-                
-                <!-- קישורים בפינה הימנית העליונה -->
                 <div class="flex-1 flex items-center gap-2 lg:gap-3">
-                    <button onclick="openExternalLink('https://ai4u.base44.app/')" class="flex items-center gap-2 text-xs lg:text-sm font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-700 px-3 py-1.5 lg:px-4 lg:py-2 rounded-xl border border-slate-700 transition-all shadow-sm">
+                    <button onclick="openExternalLink('https://ai4u.base44.app/')" class="flex items-center gap-2 text-xs lg:text-sm font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-700 px-3 py-1.5 lg:px-4 lg:py-2 rounded-xl border border-slate-700 transition-all shadow-sm cursor-pointer">
                         <i data-lucide="globe" class="w-4 h-4 text-blue-400"></i>
                         <span>AI Tools</span>
                     </button>
                 </div>
-                
-                <!-- לוגואים ממורכזים -->
                 <div class="flex items-center justify-center gap-3 h-full">
-                    <!-- לוגו ימני (hlogo) -->
-                    <img src="hlogo.png" alt="לוגו ימני" class="max-h-10 w-auto object-contain">
-                    
-                    <!-- לוגו שמאלי (logo) -->
-                    <img src="logo.png" alt="לוגו שמאלי" class="max-h-10 w-auto object-contain">
+                    <img src="hlogo.png" alt="לוגו ימני" class="max-h-10 w-auto object-contain" onerror="this.style.display='none'">
+                    <img src="logo.png" alt="לוגו שמאלי" class="max-h-10 w-auto object-contain" onerror="this.style.display='none'">
                 </div>
-                
                 <div class="flex-1 text-left">
                     <span class="text-xs bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50 font-bold animate-text-breathe">
                         מחובר
@@ -125,24 +135,19 @@
         </header>
 
         <!-- אזור תוכן מרכזי -->
-        <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-4rem)] w-full">
+        <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-4rem)] w-full relative" id="main-content-area">
             
             <!-- עמודה ימנית: וידאו מרצה + רשימת קורסים -->
             <aside class="lg:col-span-3 xl:col-span-3 flex flex-col gap-3 h-full overflow-hidden">
-                
                 <!-- נגן וידאו קטן (מרצה) -->
                 <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-xl relative aspect-video flex-shrink-0 flex items-center justify-center">
-                    <!-- מצב המתנה -->
                     <div id="instructor-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400 z-10 transition-opacity">
                         <i data-lucide="video" class="w-8 h-8 mb-2 opacity-20"></i>
                         <p class="text-xs font-medium">מצלמת מרצה</p>
                     </div>
-
-                    <!-- וידאו המרצה (YouTube) -->
                     <div id="instructor-video-wrapper" class="hidden absolute inset-0 w-full h-full pointer-events-none z-0">
                         <div id="instructor-video"></div>
                     </div>
-                    
                     <div id="instructor-label" class="hidden absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-medium border border-white/10 z-20">
                         המרצה
                     </div>
@@ -160,16 +165,14 @@
                             <button id="filter-design" onclick="toggleFilter('design')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">עיצוב וגרפיקה</button>
                         </div>
                     </div>
-                    
-                    <!-- רשימת השיעורים -->
                     <div id="lesson-list" class="flex-1 p-1.5 flex flex-col gap-0.5 overflow-y-auto custom-scrollbar">
-                        <!-- פריטי הרשימה ייווצרו כאן דינמית -->
+                        <!-- פריטי הרשימה ייווצרו כאן -->
                     </div>
                 </div>
             </aside>
 
-            <!-- עמודה שמאלית: וידאו ראשי -->
-            <section class="lg:col-span-9 xl:col-span-9 flex flex-col h-full bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden relative">
+            <!-- עמודה שמאלית: וידאו ראשי עם כפתורים מותאמים -->
+            <section class="lg:col-span-9 xl:col-span-9 flex flex-col h-full bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden relative" id="video-section">
                 
                 <!-- מצב המתנה -->
                 <div id="main-placeholder" class="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 z-10 relative">
@@ -182,14 +185,54 @@
                     </p>
                 </div>
 
-                <!-- נגן הוידאו הראשי (YouTube) -->
+                <!-- מיכל נגן הוידאו הראשי -->
                 <div id="main-video-container" class="hidden absolute inset-0 w-full h-full bg-black z-0">
-                    <div id="main-video"></div>
                     
-                    <!-- חלונית המידע שמופיעה ונעלמת על הוידאו -->
+                    <!-- הנגן עצמו (חוסמים לו את אפשרות הלחיצה כדי להשתלט עם השכבה שלנו) -->
+                    <div class="w-full h-full pointer-events-none" id="main-video-wrapper">
+                        <div id="main-video"></div>
+                    </div>
+                    
+                    <!-- שכבת לחיצה שקופה על כל הוידאו כדי לעצור/להפעיל -->
+                    <div id="video-click-layer" class="absolute inset-0 z-10 cursor-pointer" onclick="togglePlayPause(event)"></div>
+                    
+                    <!-- חלונית המידע (Title) -->
                     <div id="video-info-overlay" class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-lg shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none z-20">
                         <h3 id="current-lesson-title" class="text-sm font-bold text-blue-400"></h3>
                         <p id="current-lesson-type" class="text-[10px] text-slate-400 mt-0.5"></p>
+                    </div>
+
+                    <!-- סרגל הכלים המותאם אישית (Custom Controls) -->
+                    <div id="custom-controls" class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-700/50 px-5 py-3 flex items-center gap-5 z-30 transition-all duration-300 transform translate-y-0 opacity-100" dir="ltr" onclick="event.stopPropagation()">
+                        
+                        <!-- כפתור פליי / פאוז -->
+                        <button onclick="togglePlayPause(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                            <i data-lucide="pause" class="w-6 h-6" id="icon-play-pause"></i>
+                        </button>
+                        
+                        <!-- אזור ווליום -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleMute(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                                <i data-lucide="volume-2" class="w-5 h-5" id="icon-volume"></i>
+                            </button>
+                            <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-24" oninput="changeVolume(this.value)">
+                        </div>
+                        
+                        <!-- אזור התקדמות -->
+                        <div class="flex-1 flex items-center gap-3">
+                            <span id="time-current" class="text-xs text-slate-300 font-mono w-10 text-right">00:00</span>
+                            <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="flex-1" 
+                                   onmousedown="isSeeking=true" 
+                                   onmouseup="isSeeking=false"
+                                   onchange="seekVideo(this.value)"
+                                   oninput="isSeeking=true">
+                            <span id="time-total" class="text-xs text-slate-300 font-mono w-10 text-left">00:00</span>
+                        </div>
+                        
+                        <!-- מסך מלא -->
+                        <button onclick="toggleFullScreen(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none ml-2">
+                            <i data-lucide="maximize" class="w-5 h-5"></i>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -202,7 +245,6 @@
             <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-full p-1.5 transition-colors">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            
             <div class="flex items-center gap-3 mb-5 pr-2">
                 <span id="modal-icon" class="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold"></span>
                 <div>
@@ -210,49 +252,37 @@
                     <p id="modal-type" class="text-xs text-slate-400 mt-0.5"></p>
                 </div>
             </div>
-            
             <div class="bg-slate-800/40 rounded-xl p-4 mb-6 border border-slate-700/50">
                 <h3 id="modal-info-title" class="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                    <i data-lucide="info" class="w-4 h-4 text-blue-400"></i>
-                    מה נלמד בשיעור זה?
+                    <i data-lucide="info" class="w-4 h-4 text-blue-400"></i> מה נלמד בשיעור זה?
                 </h3>
                 <p id="modal-desc" class="text-sm text-slate-400 leading-relaxed"></p>
             </div>
-            
             <div class="grid grid-cols-2 gap-3 mb-4">
-                <button id="modal-btn-presentation" onclick="openResource('presentation')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors">
-                    <i data-lucide="file-text" class="w-4 h-4 text-red-400"></i>
-                    <span>מצגת הקורס</span>
+                <button id="modal-btn-presentation" onclick="openResource('presentation')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors cursor-pointer">
+                    <i data-lucide="file-text" class="w-4 h-4 text-red-400"></i><span>מצגת הקורס</span>
                 </button>
-                <button id="modal-btn-workbook" onclick="openResource('workbook')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors">
-                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i>
-                    <span>חוברת תרגול</span>
+                <button id="modal-btn-workbook" onclick="openResource('workbook')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors cursor-pointer">
+                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i><span>חוברת תרגול</span>
                 </button>
             </div>
-            
-            <button id="modal-play-btn" onclick="playFromModal()" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all">
-                <i data-lucide="play" class="w-5 h-5"></i>
-                <span id="modal-play-text">התחל צפייה</span>
+            <button id="modal-play-btn" onclick="playFromModal()" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all cursor-pointer">
+                <i data-lucide="play" class="w-5 h-5"></i><span id="modal-play-text">התחל צפייה</span>
             </button>
         </div>
     </div>
 
     <!-- לוגיקה ו-JavaScript -->
     <script>
-        // --- חסימת מקש ימני בכל המערכת למניעת העתקות ושמירות ---
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+        // --- חסימת מקש ימני למניעת העתקות ---
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
         // =====================================================================
         // [אזור הנתונים]
         // =====================================================================
         const skillsMap = {
-            'ai': 'אוריינות AI',
-            'research': 'מחקר ולמידה',
-            'management': 'ניהול משימות',
-            'innovation': 'חדשנות ופיתוח',
-            'design': 'עיצוב וגרפיקה'
+            'ai': 'אוריינות AI', 'research': 'מחקר ולמידה', 'management': 'ניהול משימות',
+            'innovation': 'חדשנות ופיתוח', 'design': 'עיצוב וגרפיקה'
         };
 
         const lessonsData = [
@@ -283,18 +313,21 @@
 
         if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 
-        // --- סיסמה מקודדת Base64 (המקור: Haaretz2026) ---
         const ENCODED_PASSWORD = "SGFhcmV0ejIwMjY=";
         
         let activeLessonId = null;
         let selectedLessonForModal = null; 
         let currentFilter = 'all'; 
-        let overlayTimeout = null; 
 
-        // --- משתני YouTube API ---
+        // --- משתני YouTube API ונגנים ---
         let mainPlayer = null;
         let instructorPlayer = null;
         let isYoutubeReady = false;
+        
+        // משתנים לשליטה בסרגל הכלים וההתקדמות
+        let uiTimeout = null;
+        let progressInterval = null;
+        let isSeeking = false;
 
         function onYouTubeIframeAPIReady() {
             isYoutubeReady = true;
@@ -303,13 +336,14 @@
         // --- אלמנטים ב-DOM ---
         const loginScreen = document.getElementById('login-screen');
         const dashboardScreen = document.getElementById('dashboard-screen');
-        const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
         const errorMessage = document.getElementById('error-message');
 
         const mainPlaceholder = document.getElementById('main-placeholder');
         const mainVideoContainer = document.getElementById('main-video-container');
         const videoInfoOverlay = document.getElementById('video-info-overlay');
+        const customControls = document.getElementById('custom-controls');
+        const videoSection = document.getElementById('video-section');
         const instructorPlaceholder = document.getElementById('instructor-placeholder');
         const instructorWrapper = document.getElementById('instructor-video-wrapper');
         const instructorLabel = document.getElementById('instructor-label');
@@ -328,13 +362,37 @@
         
         const btnPresentation = document.getElementById('modal-btn-presentation');
         const btnWorkbook = document.getElementById('modal-btn-workbook');
-        
-        // --- מערכת התחברות עם Base64 ---
+
+        // --- ניהול הופעה/העלמה של ממשק המשתמש (סרגל כלים) ---
+        function showVideoUI() {
+            videoInfoOverlay.classList.remove('opacity-0');
+            customControls.classList.remove('opacity-0', 'translate-y-full');
+            videoSection.classList.remove('cursor-none');
+            
+            clearTimeout(uiTimeout);
+            
+            if (mainPlayer && mainPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                uiTimeout = setTimeout(() => {
+                    videoInfoOverlay.classList.add('opacity-0');
+                    customControls.classList.add('opacity-0', 'translate-y-full');
+                    videoSection.classList.add('cursor-none');
+                }, 3000);
+            }
+        }
+
+        videoSection.addEventListener('mousemove', showVideoUI);
+        videoSection.addEventListener('click', showVideoUI);
+        videoSection.addEventListener('mouseleave', () => {
+            if (mainPlayer && mainPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                videoInfoOverlay.classList.add('opacity-0');
+                customControls.classList.add('opacity-0', 'translate-y-full');
+            }
+        });
+
+        // --- התחברות ---
         function handleLogin(e) {
             e.preventDefault();
-            // קידוד הקלט של המשתמש והשוואה לסיסמה המקודדת (עם ניקוי רווחים בטעות)
             const inputEncoded = btoa(passwordInput.value.trim());
-            
             if (inputEncoded === ENCODED_PASSWORD) {
                 loginScreen.classList.add('hidden');
                 dashboardScreen.classList.remove('hidden');
@@ -346,31 +404,16 @@
             return false;
         }
 
-        // --- הופעת תווית המידע על הוידאו ---
-        function triggerOverlay() {
-            videoInfoOverlay.classList.remove('opacity-0');
-            videoInfoOverlay.classList.add('opacity-100');
-            clearTimeout(overlayTimeout);
-            
-            overlayTimeout = setTimeout(() => {
-                videoInfoOverlay.classList.remove('opacity-100');
-                videoInfoOverlay.classList.add('opacity-0');
-            }, 3500);
-        }
-
-        // --- ניהול מודל (חלון צף) ---
+        // --- פתיחת חלונית מידע (Modal) ---
         function openModal(lessonId) {
             const lesson = lessonsData.find(l => l.id === lessonId);
             if (!lesson) return;
-            
             selectedLessonForModal = lesson;
             
             modalTitle.textContent = lesson.title;
-            // שימוש ב-innerHTML כדי שיזהה את תגיות ה-<br>
             modalDesc.innerHTML = lesson.description;
             modalType.textContent = lesson.type === 'lecture' ? 'הרצאה תיאורטית' : 'סדנא מעשית';
             
-            // הסתרת הכותרת "מה נלמד בשיעור זה" עבור סדנאות
             if (lesson.type === 'workshop') {
                 modalInfoTitle.classList.add('hidden');
                 modalInfoTitle.classList.remove('flex');
@@ -384,29 +427,16 @@
                 lesson.type === 'lecture' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'
             }`;
 
-            // הסתרה/הצגה של כפתורי חומרים בהתאם לנתונים
-            if (lesson.presentationUrl && lesson.presentationUrl.trim() !== "") {
-                btnPresentation.classList.remove('hidden');
-                btnPresentation.classList.add('flex');
-            } else {
-                btnPresentation.classList.add('hidden');
-                btnPresentation.classList.remove('flex');
-            }
+            btnPresentation.classList.toggle('hidden', !lesson.presentationUrl);
+            btnPresentation.classList.toggle('flex', !!lesson.presentationUrl);
+            btnWorkbook.classList.toggle('hidden', !lesson.workbookUrl);
+            btnWorkbook.classList.toggle('flex', !!lesson.workbookUrl);
 
-            if (lesson.workbookUrl && lesson.workbookUrl.trim() !== "") {
-                btnWorkbook.classList.remove('hidden');
-                btnWorkbook.classList.add('flex');
-            } else {
-                btnWorkbook.classList.add('hidden');
-                btnWorkbook.classList.remove('flex');
-            }
-
-            // כפתור צפייה/המשך צפייה
             if (activeLessonId === lesson.id) {
-                modalPlayBtn.className = "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all bg-slate-800 text-blue-400 border border-slate-700 hover:bg-slate-700";
+                modalPlayBtn.className = "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all bg-slate-800 text-blue-400 border border-slate-700 hover:bg-slate-700 cursor-pointer";
                 modalPlayText.textContent = "המשך צפייה";
             } else {
-                modalPlayBtn.className = "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20";
+                modalPlayBtn.className = "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20 cursor-pointer";
                 modalPlayText.textContent = "התחל צפייה";
             }
             
@@ -414,10 +444,8 @@
             lucide.createIcons();
         }
 
-        function closeModal() {
-            modal.classList.add('hidden');
-            selectedLessonForModal = null;
-        }
+        function closeModal() { modal.classList.add('hidden'); selectedLessonForModal = null; }
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
         function playFromModal() {
             if (selectedLessonForModal) {
@@ -426,46 +454,105 @@
             }
         }
 
-        // --- שדרוג אבטחה: פתיחה בחלון קופץ נקי ---
         function openResource(type) {
             if (!selectedLessonForModal) return;
-            let targetUrl = '';
-            
-            if (type === 'presentation' && selectedLessonForModal.presentationUrl) {
-                targetUrl = selectedLessonForModal.presentationUrl;
-            } else if (type === 'workbook' && selectedLessonForModal.workbookUrl) {
-                targetUrl = selectedLessonForModal.workbookUrl;
-            }
-
+            let targetUrl = type === 'presentation' ? selectedLessonForModal.presentationUrl : selectedLessonForModal.workbookUrl;
             if (targetUrl) {
-                // הגדרת חלון ללא סרגלי כלים (ללא שורת כתובת מובהקת וללא כפתורים)
                 const windowFeatures = "menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=800,top=100,left=100";
                 window.open(targetUrl, 'CourseResource', windowFeatures);
             }
         }
 
-        // פתיחת קישורים חיצוניים בחלון קופץ זהה
         function openExternalLink(url) {
-            const windowFeatures = "menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=800,top=100,left=100";
-            window.open(url, 'ExternalTool', windowFeatures);
+            window.open(url, 'ExternalTool', "menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=800,top=100,left=100");
         }
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
+        // --- שליטה מותאמת בנגן היוטיוב ---
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
 
-        // --- הפעלת שיעור ביוטיוב ---
+        function updateProgressBar() {
+            if(!mainPlayer || typeof mainPlayer.getCurrentTime !== 'function' || isSeeking) return;
+            const current = mainPlayer.getCurrentTime();
+            const duration = mainPlayer.getDuration();
+            if(duration > 0) {
+                const percent = (current / duration) * 100;
+                document.getElementById('progress-bar').value = percent;
+                document.getElementById('time-current').textContent = formatTime(current);
+                document.getElementById('time-total').textContent = formatTime(duration);
+            }
+        }
+
+        function seekVideo(percent) {
+            if(!mainPlayer) return;
+            const duration = mainPlayer.getDuration();
+            const seekToTime = (percent / 100) * duration;
+            mainPlayer.seekTo(seekToTime, true);
+        }
+
+        function togglePlayPause(e) {
+            if(e) e.stopPropagation();
+            if(!mainPlayer || typeof mainPlayer.getPlayerState !== 'function') return;
+            const state = mainPlayer.getPlayerState();
+            if(state === YT.PlayerState.PLAYING) {
+                mainPlayer.pauseVideo();
+            } else {
+                mainPlayer.playVideo();
+            }
+        }
+
+        function changeVolume(val) {
+            if(!mainPlayer) return;
+            mainPlayer.setVolume(val);
+            if(mainPlayer.isMuted()) mainPlayer.unMute();
+            updateVolumeIcon(val);
+        }
+
+        function toggleMute(e) {
+            if(e) e.stopPropagation();
+            if(!mainPlayer) return;
+            if(mainPlayer.isMuted()) {
+                mainPlayer.unMute();
+                const vol = mainPlayer.getVolume();
+                document.getElementById('volume-slider').value = vol;
+                updateVolumeIcon(vol);
+            } else {
+                mainPlayer.mute();
+                document.getElementById('volume-slider').value = 0;
+                updateVolumeIcon(0);
+            }
+        }
+
+        function updateVolumeIcon(val) {
+            const icon = document.getElementById('icon-volume');
+            if(val == 0 || (mainPlayer && mainPlayer.isMuted())) icon.setAttribute('data-lucide', 'volume-x');
+            else if(val < 50) icon.setAttribute('data-lucide', 'volume-1');
+            else icon.setAttribute('data-lucide', 'volume-2');
+            lucide.createIcons();
+        }
+
+        function toggleFullScreen(e) {
+            if(e) e.stopPropagation();
+            const container = document.getElementById('main-video-container');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => console.log(`Error fullscreen: ${err.message}`));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // --- הפעלת שיעור ---
         function playLesson(lessonId) {
             const lesson = lessonsData.find(l => l.id === lessonId);
             if (!lesson) return;
-
-            if (!isYoutubeReady) {
-                alert("מערכת הוידאו עדיין נטענת. אנא המתן שניה ונסה שוב.");
-                return;
-            }
+            if (!isYoutubeReady) { alert("מערכת הוידאו עדיין נטענת. אנא המתן שניה ונסה שוב."); return; }
 
             activeLessonId = lesson.id;
-            
             currentLessonTitle.textContent = lesson.title;
             currentLessonType.textContent = lesson.type === 'lecture' ? 'הרצאה תיאורטית' : 'סדנא מעשית';
 
@@ -475,7 +562,7 @@
             instructorWrapper.classList.remove('hidden');
             instructorLabel.classList.remove('hidden');
             
-            triggerOverlay();
+            showVideoUI();
 
             if (!mainPlayer) {
                 mainPlayer = new YT.Player('main-video', {
@@ -486,10 +573,17 @@
                         'rel': 0, 
                         'modestbranding': 1, 
                         'playsinline': 1,
-                        // מאפשר גישה רק מהדומיין שלך (עובד רק אם הוגדר ב-API, אך מוסיף שכבת הגנה)
-                        'origin': window.location.origin 
+                        'controls': 0, // מעלים לחלוטין את הנגן המקורי של יוטיוב
+                        'disablekb': 1,
+                        'fs': 0,
+                        'autoplay': 1
                     },
                     events: {
+                        'onReady': (e) => { 
+                            e.target.playVideo(); // פליי אוטומטי
+                            updateVolumeIcon(e.target.getVolume());
+                            document.getElementById('volume-slider').value = e.target.getVolume();
+                        },
                         'onStateChange': onMainPlayerStateChange
                     }
                 });
@@ -499,101 +593,91 @@
                     width: '100%',
                     videoId: lesson.instructorVideoId,
                     playerVars: {
-                        'rel': 0,
-                        'modestbranding': 1,
-                        'controls': 0, 
-                        'disablekb': 1, 
-                        'playsinline': 1,
-                        'origin': window.location.origin
+                        'rel': 0, 'modestbranding': 1, 'controls': 0, 'disablekb': 1, 'playsinline': 1, 'autoplay': 1
                     },
                     events: {
-                        'onReady': (e) => {
-                            e.target.mute(); 
-                        }
+                        'onReady': (e) => { e.target.mute(); e.target.playVideo(); }
                     }
                 });
             } else {
-                mainPlayer.loadVideoById(lesson.mainVideoId);
-                instructorPlayer.loadVideoById(lesson.instructorVideoId);
+                mainPlayer.loadVideoById({videoId: lesson.mainVideoId});
+                instructorPlayer.loadVideoById({videoId: lesson.instructorVideoId});
             }
 
             renderList(); 
         }
 
-        // --- סנכרון הנגנים ---
+        // --- סנכרון וניהול סטטוס נגן ---
         function onMainPlayerStateChange(event) {
-            triggerOverlay();
+            showVideoUI();
             
-            if (!instructorPlayer || typeof instructorPlayer.playVideo !== 'function') return;
-
+            const icon = document.getElementById('icon-play-pause');
+            
             if (event.data === YT.PlayerState.PLAYING) {
-                const mainTime = mainPlayer.getCurrentTime();
-                const instTime = instructorPlayer.getCurrentTime();
-                if (Math.abs(mainTime - instTime) > 0.5) {
-                    instructorPlayer.seekTo(mainTime, true);
+                icon.setAttribute('data-lucide', 'pause');
+                if(progressInterval) clearInterval(progressInterval);
+                progressInterval = setInterval(updateProgressBar, 500);
+                
+                if (instructorPlayer && typeof instructorPlayer.playVideo === 'function') {
+                    const mainTime = mainPlayer.getCurrentTime();
+                    const instTime = instructorPlayer.getCurrentTime();
+                    if (Math.abs(mainTime - instTime) > 0.5) instructorPlayer.seekTo(mainTime, true);
+                    instructorPlayer.playVideo();
                 }
-                instructorPlayer.playVideo();
             } 
-            else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.BUFFERING) {
-                instructorPlayer.pauseVideo();
+            else {
+                icon.setAttribute('data-lucide', 'play');
+                if(progressInterval) clearInterval(progressInterval);
+                
+                if (instructorPlayer && typeof instructorPlayer.pauseVideo === 'function') {
+                    if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.BUFFERING) {
+                        instructorPlayer.pauseVideo();
+                    } else if (event.data === YT.PlayerState.ENDED) {
+                        instructorPlayer.stopVideo();
+                    }
+                }
             }
-            else if (event.data === YT.PlayerState.ENDED) {
-                instructorPlayer.stopVideo();
-            }
+            lucide.createIcons();
         }
 
-        // --- סינון תוכן עניינים לפי מיומנויות ---
+        // --- סינון תוכן ---
         function toggleFilter(skillId) {
-            if (currentFilter === skillId) {
-                currentFilter = 'all'; 
-            } else {
-                currentFilter = skillId; 
-            }
-            
+            currentFilter = currentFilter === skillId ? 'all' : skillId; 
             const allSkills = ['ai', 'research', 'management', 'innovation', 'design'];
             allSkills.forEach(id => {
                 const btn = document.getElementById('filter-' + id);
                 if (!btn) return;
-                if (currentFilter === id) {
-                    btn.className = "bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded-md transition-colors font-bold";
-                } else {
-                    btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-400 border border-transparent px-2 py-1 rounded-md transition-colors";
-                }
+                btn.className = currentFilter === id 
+                    ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded-md transition-colors font-bold cursor-pointer"
+                    : "bg-slate-800 hover:bg-slate-700 text-slate-400 border border-transparent px-2 py-1 rounded-md transition-colors cursor-pointer";
             });
-            
             renderList();
         }
 
-        // --- רינדור רשימה צדדית ---
+        // --- רינדור רשימה ---
         function renderList() {
             lessonList.innerHTML = '';
+            let filteredLessons = currentFilter === 'all' ? [...lessonsData] : lessonsData.filter(lesson => lesson.skill === currentFilter);
             
-            let filteredLessons = currentFilter === 'all' 
-                ? [...lessonsData] 
-                : lessonsData.filter(lesson => lesson.skill === currentFilter);
-            
-            // סידור מחדש: סדנאות מופיעות לפני הרצאות
             filteredLessons.sort((a, b) => {
                 if (a.type === 'workshop' && b.type === 'lecture') return -1;
                 if (a.type === 'lecture' && b.type === 'workshop') return 1;
-                return a.id - b.id; // שומר על הסדר המספרי בתוך כל קבוצה (16-20, ואז 1-15)
+                return a.id - b.id;
             });
             
             filteredLessons.forEach((lesson, index) => {
                 const isActive = activeLessonId === lesson.id;
                 const isLecture = lesson.type === 'lecture';
-                
                 const typeClass = isLecture ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400';
                 const textClass = isActive ? 'text-blue-400' : 'text-slate-200';
                 const borderClass = isActive ? 'border border-blue-500/30 bg-slate-800/60' : 'border border-transparent bg-slate-800/20 hover:bg-slate-800/40';
 
-                // תגיות בולטות להרצאה או סדנא
                 const typeBadge = isLecture
                     ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 leading-none">הרצאה</span>`
                     : `<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 leading-none">סדנא</span>`;
 
                 const itemHtml = `
-                    <button onclick="openModal(${lesson.id})" class="w-full px-2.5 py-2 flex items-center justify-between text-right rounded-lg transition-all duration-200 ${borderClass} group">
+                    <button onclick="openModal(${lesson.id})" class="w-full px-2.5 py-2 flex items-center justify-between text-right rounded-lg transition-all duration-200 ${borderClass} group cursor-pointer">
                         <div class="flex items-center gap-3 w-full overflow-hidden">
                             <span class="w-7 h-7 flex-shrink-0 rounded-md flex items-center justify-center text-[12px] font-bold ${typeClass}">
                                 ${index + 1}
@@ -616,10 +700,8 @@
                         </div>
                     </button>
                 `;
-                
                 lessonList.insertAdjacentHTML('beforeend', itemHtml);
             });
-
             if (typeof lucide !== 'undefined') { lucide.createIcons(); }
         }
     </script>
