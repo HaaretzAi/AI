@@ -88,14 +88,14 @@
         }
     </style>
 </head>
-<body class="bg-[#0A0F1C] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden">
+<body class="bg-[#0A0F1C] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden h-screen w-screen">
 
     <!-- מסך התחברות -->
-    <div id="login-screen" class="min-h-screen bg-slate-950 flex items-center justify-center text-white relative z-[100]">
+    <div id="login-screen" class="absolute inset-0 bg-slate-950 flex items-center justify-center text-white z-[100]">
         <div class="bg-slate-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-800">
-            <div class="flex items-center justify-center gap-4 mb-8">
-                <img src="hlogo.png" alt="לוגו ימני" class="max-h-12 w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
-                <img src="logo.png" alt="לוגו שמאלי" class="max-h-12 w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
+            <div class="flex items-center justify-center gap-4 mb-8 h-12">
+                <img src="hlogo.png" alt="לוגו ימני" class="max-h-full w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
+                <img src="logo.png" alt="לוגו שמאלי" class="max-h-full w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
             </div>
             <h1 class="text-2xl font-bold text-center mb-8">כניסה למערכת הקורסים</h1>
             <form id="login-form" class="space-y-6" onsubmit="return handleLogin(event)">
@@ -112,7 +112,7 @@
     </div>
 
     <!-- מסך המערכת -->
-    <div id="dashboard-screen" class="hidden h-screen flex flex-col">
+    <div id="dashboard-screen" class="hidden h-full flex flex-col overflow-hidden">
         <!-- אזור הדר - לוגו -->
         <header class="bg-slate-900/50 border-b border-slate-800/50 backdrop-blur-sm h-16 flex-shrink-0">
             <div class="max-w-[1600px] h-full mx-auto px-6 flex items-center justify-between">
@@ -134,108 +134,104 @@
             </div>
         </header>
 
-        <!-- אזור תוכן מרכזי (מותאם אישית למובייל ודסקטופ) -->
-        <main class="max-w-[1600px] mx-auto p-4 flex flex-col lg:grid lg:grid-cols-12 gap-4 h-[calc(100vh-4rem)] w-full relative overflow-y-auto lg:overflow-hidden" id="main-content-area">
+        <!-- אזור תוכן מרכזי -->
+        <!-- שיניתי כאן את ההגדרות של הגובה שיהיו תחומות בדיוק לשטח שנשאר במסך פחות הריפודים -->
+        <main class="max-w-[1600px] mx-auto p-4 flex-1 w-full flex flex-col overflow-hidden" id="main-content-area">
             
-            <!-- עמודה שמאלית: וידאו ראשי עם כפתורים מותאמים (במובייל למעלה, בדסקטופ משמאל) -->
-            <section class="lg:col-span-9 xl:col-span-9 flex flex-col order-1 lg:order-2 w-full aspect-video lg:aspect-auto lg:h-full bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden relative" id="video-section">
-                
-                <!-- מצב המתנה -->
-                <div id="main-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 z-10 p-4">
-                    <div class="w-16 h-16 md:w-20 md:h-20 mb-4 rounded-full bg-slate-800 flex items-center justify-center shadow-inner">
-                        <i data-lucide="play" class="w-8 h-8 text-slate-600 ml-1"></i>
-                    </div>
-                    <h2 class="text-lg md:text-xl font-bold text-slate-300 mb-2 text-center">ברוכים הבאים לקורס</h2>
-                    <p class="text-xs md:text-sm text-slate-400 text-center max-w-md">
-                        כדי להתחיל בלמידה, אנא בחר שיעור מהתפריט שמימין לקבלת פרטים והפעלת ההרצאה.
-                    </p>
-                </div>
-
-                <!-- מיכל נגן הוידאו הראשי -->
-                <div id="main-video-container" class="hidden absolute inset-0 w-full h-full bg-black z-0">
+            <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden min-h-0">
+                <!-- עמודה שמאלית: וידאו ראשי (בדסקטופ משמאל) -->
+                <!-- הוספתי הגבלת גובה פנימית מלאה -->
+                <section class="lg:col-span-9 xl:col-span-9 order-1 lg:order-2 bg-slate-900 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col" id="video-section">
                     
-                    <!-- הנגן עצמו -->
-                    <div class="w-full h-full pointer-events-none" id="main-video-wrapper">
-                        <div id="main-video"></div>
-                    </div>
-                    
-                    <!-- שכבת לחיצה שקופה על כל הוידאו כדי לעצור/להפעיל -->
-                    <div id="video-click-layer" class="absolute inset-0 z-10 cursor-pointer" onclick="togglePlayPause(event)"></div>
-                    
-                    <!-- חלונית המידע (Title) -->
-                    <div id="video-info-overlay" class="absolute top-2 right-2 md:top-4 md:right-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-3 py-1.5 md:px-4 md:py-2 rounded-lg shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none z-20">
-                        <h3 id="current-lesson-title" class="text-xs md:text-sm font-bold text-blue-400"></h3>
-                        <p id="current-lesson-type" class="text-[10px] text-slate-400 mt-0.5"></p>
+                    <!-- מצב המתנה -->
+                    <div id="main-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 z-10 p-4">
+                        <div class="w-16 h-16 md:w-20 md:h-20 mb-4 rounded-full bg-slate-800 flex items-center justify-center shadow-inner">
+                            <i data-lucide="play" class="w-8 h-8 text-slate-600 ml-1"></i>
+                        </div>
+                        <h2 class="text-lg md:text-xl font-bold text-slate-300 mb-2 text-center">ברוכים הבאים לקורס</h2>
+                        <p class="text-xs md:text-sm text-slate-400 text-center max-w-md">
+                            כדי להתחיל בלמידה, אנא בחר שיעור מהתפריט שמימין לקבלת פרטים והפעלת ההרצאה.
+                        </p>
                     </div>
 
-                    <!-- סרגל הכלים המותאם אישית (Custom Controls) -->
-                    <div id="custom-controls" class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-700/50 px-3 py-2 md:px-5 md:py-3 flex items-center gap-3 md:gap-5 z-30 transition-all duration-300 transform translate-y-0 opacity-100" dir="ltr" onclick="event.stopPropagation()">
+                    <!-- מיכל נגן הוידאו הראשי -->
+                    <div id="main-video-container" class="hidden absolute inset-0 w-full h-full bg-black z-0">
+                        <!-- הנגן עצמו -->
+                        <div class="w-full h-full pointer-events-none" id="main-video-wrapper">
+                            <div id="main-video"></div>
+                        </div>
                         
-                        <!-- כפתור פליי / פאוז -->
-                        <button onclick="togglePlayPause(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
-                            <i data-lucide="pause" class="w-5 h-5 md:w-6 md:h-6" id="icon-play-pause"></i>
-                        </button>
+                        <!-- שכבת לחיצה שקופה על כל הוידאו כדי לעצור/להפעיל -->
+                        <div id="video-click-layer" class="absolute inset-0 z-10 cursor-pointer" onclick="togglePlayPause(event)"></div>
                         
-                        <!-- אזור ווליום (מוסתר במובייל קטן) -->
-                        <div class="hidden sm:flex items-center gap-2">
-                            <button onclick="toggleMute(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
-                                <i data-lucide="volume-2" class="w-4 h-4 md:w-5 md:h-5" id="icon-volume"></i>
+                        <!-- חלונית המידע (Title) -->
+                        <div id="video-info-overlay" class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-lg shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none z-20">
+                            <h3 id="current-lesson-title" class="text-sm font-bold text-blue-400"></h3>
+                            <p id="current-lesson-type" class="text-[10px] text-slate-400 mt-0.5"></p>
+                        </div>
+
+                        <!-- סרגל הכלים המותאם אישית (Custom Controls) -->
+                        <div id="custom-controls" class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-700/50 px-5 py-3 flex items-center gap-5 z-30 transition-all duration-300 transform translate-y-0 opacity-100" dir="ltr" onclick="event.stopPropagation()">
+                            <button onclick="togglePlayPause(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                                <i data-lucide="pause" class="w-6 h-6" id="icon-play-pause"></i>
                             </button>
-                            <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-16 md:w-24" oninput="changeVolume(this.value)">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleMute(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                                    <i data-lucide="volume-2" class="w-5 h-5" id="icon-volume"></i>
+                                </button>
+                                <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-24" oninput="changeVolume(this.value)">
+                            </div>
+                            <div class="flex-1 flex items-center gap-3">
+                                <span id="time-current" class="text-xs text-slate-300 font-mono w-10 text-right">00:00</span>
+                                <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="flex-1" 
+                                       onmousedown="isSeeking=true" 
+                                       onmouseup="isSeeking=false"
+                                       onchange="seekVideo(this.value)"
+                                       oninput="isSeeking=true">
+                                <span id="time-total" class="text-xs text-slate-300 font-mono w-10 text-left">00:00</span>
+                            </div>
+                            <button onclick="toggleFullScreen(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none ml-2">
+                                <i data-lucide="maximize" class="w-5 h-5"></i>
+                            </button>
                         </div>
-                        
-                        <!-- אזור התקדמות -->
-                        <div class="flex-1 flex items-center gap-2 md:gap-3">
-                            <span id="time-current" class="text-[10px] md:text-xs text-slate-300 font-mono w-8 md:w-10 text-right">00:00</span>
-                            <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="flex-1" 
-                                   onmousedown="isSeeking=true" 
-                                   onmouseup="isSeeking=false"
-                                   onchange="seekVideo(this.value)"
-                                   oninput="isSeeking=true">
-                            <span id="time-total" class="text-[10px] md:text-xs text-slate-300 font-mono w-8 md:w-10 text-left">00:00</span>
-                        </div>
-                        
-                        <!-- מסך מלא -->
-                        <button onclick="toggleFullScreen(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none ml-1 md:ml-2">
-                            <i data-lucide="maximize" class="w-4 h-4 md:w-5 md:h-5"></i>
-                        </button>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- עמודה ימנית: וידאו מרצה + רשימת קורסים (במובייל למטה, בדסקטופ מימין) -->
-            <aside class="lg:col-span-3 xl:col-span-3 flex flex-col gap-3 order-2 lg:order-1 lg:h-full w-full">
-                <!-- נגן וידאו קטן (מרצה) -->
-                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-xl relative aspect-video flex-shrink-0 flex items-center justify-center w-full sm:w-2/3 lg:w-full mx-auto">
-                    <div id="instructor-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400 z-10 transition-opacity">
-                        <i data-lucide="video" class="w-8 h-8 mb-2 opacity-20"></i>
-                        <p class="text-xs font-medium">מצלמת מרצה</p>
-                    </div>
-                    <div id="instructor-video-wrapper" class="hidden absolute inset-0 w-full h-full pointer-events-none z-0">
-                        <div id="instructor-video"></div>
-                    </div>
-                    <div id="instructor-label" class="hidden absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-medium border border-white/10 z-20">
-                        המרצה
-                    </div>
-                </div>
-
-                <!-- רשימת קורסים -->
-                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-800 shadow-xl flex flex-col overflow-hidden min-h-[300px] lg:min-h-0">
-                    <div class="p-3 border-b border-slate-800 bg-slate-800/20 flex-shrink-0 flex flex-col gap-2.5">
-                        <h2 class="text-sm font-bold text-white">סינון לפי מיומנות</h2>
-                        <div class="flex flex-wrap gap-1.5 text-[10px] font-medium">
-                            <button id="filter-ai" onclick="toggleFilter('ai')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">אוריינות AI</button>
-                            <button id="filter-research" onclick="toggleFilter('research')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">מחקר ולמידה</button>
-                            <button id="filter-management" onclick="toggleFilter('management')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">ניהול משימות</button>
-                            <button id="filter-innovation" onclick="toggleFilter('innovation')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">חדשנות ופיתוח</button>
-                            <button id="filter-design" onclick="toggleFilter('design')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">עיצוב וגרפיקה</button>
+                <!-- עמודה ימנית: וידאו מרצה + רשימת קורסים (בדסקטופ מימין) -->
+                <!-- הוספתי גובה מלא של עמודה פנימית וחסימת גלישה -->
+                <aside class="lg:col-span-3 xl:col-span-3 order-2 lg:order-1 flex flex-col gap-3 min-h-0 overflow-hidden">
+                    <!-- נגן וידאו קטן (מרצה) -->
+                    <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-xl relative aspect-video flex-shrink-0">
+                        <div id="instructor-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400 z-10 transition-opacity">
+                            <i data-lucide="video" class="w-8 h-8 mb-2 opacity-20"></i>
+                            <p class="text-xs font-medium">מצלמת מרצה</p>
+                        </div>
+                        <div id="instructor-video-wrapper" class="hidden absolute inset-0 w-full h-full pointer-events-none z-0">
+                            <div id="instructor-video"></div>
+                        </div>
+                        <div id="instructor-label" class="hidden absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-medium border border-white/10 z-20">
+                            המרצה
                         </div>
                     </div>
-                    <div id="lesson-list" class="flex-1 p-1.5 flex flex-col gap-0.5 overflow-y-auto custom-scrollbar">
-                        <!-- פריטי הרשימה ייווצרו כאן -->
+
+                    <!-- רשימת קורסים - אזור שמקבל גלילה פנימית -->
+                    <div class="flex-1 bg-slate-900 rounded-xl border border-slate-800 shadow-xl flex flex-col overflow-hidden min-h-0">
+                        <div class="p-3 border-b border-slate-800 bg-slate-800/20 flex-shrink-0 flex flex-col gap-2.5">
+                            <h2 class="text-sm font-bold text-white">סינון לפי מיומנות</h2>
+                            <div class="flex flex-wrap gap-1.5 text-[10px] font-medium">
+                                <button id="filter-ai" onclick="toggleFilter('ai')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">אוריינות AI</button>
+                                <button id="filter-research" onclick="toggleFilter('research')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">מחקר ולמידה</button>
+                                <button id="filter-management" onclick="toggleFilter('management')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">ניהול משימות</button>
+                                <button id="filter-innovation" onclick="toggleFilter('innovation')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">חדשנות ופיתוח</button>
+                                <button id="filter-design" onclick="toggleFilter('design')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">עיצוב וגרפיקה</button>
+                            </div>
+                        </div>
+                        <div id="lesson-list" class="flex-1 p-1.5 flex flex-col gap-0.5 overflow-y-auto custom-scrollbar">
+                            <!-- פריטי הרשימה ייווצרו כאן -->
+                        </div>
                     </div>
-                </div>
-            </aside>
+                </aside>
+            </div>
         </main>
     </div>
 
@@ -287,12 +283,12 @@
 
         const lessonsData = [
             // --- הרצאות ---
-            { id: 1, title: "עולם של עוזרי AI", type: "lecture", skill: "ai", description: "• נבין כיצד ה-AI מעצב את עתיד הארגונים ומה תפקידם של עוזרי AI<br>• נתרגל שימוש אפקטיבי בעוזרי AI לייעול משימות עבודה<br>• נכיר את הכלים המרכזיים ונתנסה בעבודה עם צ'אטבוטים מתקדמים<br>• נתרגל ניסוח פרומפטים אפקטיביים להשגת תוצאות מדויקות<br>• נלמד עקרונות אבטחת מידע לשימוש בטוח וחכם בעוזרי AI", mainVideoId: "zAc1VaTykD8", instructorVideoId: "-cxCjyf81Ys", presentationUrl: "1-1.pdf", workbookUrl: "1-2.pdf" },
-            { id: 2, title: "ניהול עם בינה מלאכותית", type: "lecture", skill: "management", description: "• נבין מהן המיומנויות החדשות הנדרשות ממנהל בעידן ה-AI<br>• נתרגל שימוש בכלי AI עבור קבלת החלטות, ניתוח מידע ותעדוף משימות<br>• נזהה דרכים בהן AI יכול לתמוך בתהליכי משוב, תקשורת וליווי עובדים<br>• נבין כיצד להשתמש ב-AI לבניית תוכנית עבודה וזיהוי הזדמנויות צמיחה<br>• נגלה איך ליצור סביבת עבודה ארגונית מעודדת חדשנות ושימוש ב-AI", mainVideoId: "3ryMVlC5g5c", instructorVideoId: "o-QYuuoU64w", presentationUrl: "2-1.pdf", workbookUrl: "2-2.pdf" },
-            { id: 3, title: "ניהול ידע ולמידה עם AI", type: "lecture", skill: "research", description: "• נבין איך קצב ההתפתחות של ה-AI משפיע על הלמידה הארגונית<br>• נלמד למפות פערי ידע עם כלי AI ולזהות מגמות וצרכי למידה בארגון<br>• נכיר כלים המאפשרים ליצור תוצרי למידה במהירות ובאיכות גבוהה<br>• ניישם שיטות לשימוש ב-AI ליצירת תוכניות למידה מותאמות אישית<br>• נחקור את תפקידם של אנשי למידה ומש\"א כמובילי שינוי בתחום ה-AI", mainVideoId: "9D2HtypkU08", instructorVideoId: "xZNYSl7T6Wk", presentationUrl: "3-1.pdf", workbookUrl: "3-2.pdf" },
-            { id: 4, title: "Claude בעבודה", type: "lecture", skill: "ai", description: "• נכיר את סביבת העבודה של Claude והכלים המרכזיים בגרסת ה-PRO<br>• נדגים שימוש אפקטיבי ב-Claude Chat לכתיבה, סיכום וניתוח<br>• נלמד איך לעבוד עם Claude Code לפיתוח קוד, בניית כלים ואוטומציות<br>• נגלה איך להשתמש ב-Claude CoWork לעבודה עם קבצים מהמחשב<br>• נבין איך לעבוד עם Claude בצורה יעילה, בטוחה ומעשית", mainVideoId: "-8raIP5xTjw", instructorVideoId: "ex9W770ooK4", presentationUrl: "4-1.pdf", workbookUrl: "4-2.pdf" },
-            { id: 5, title: "זיהוי הזדמנויות לאוטומציה בארגון", type: "lecture", skill: "innovation", description: "• נלמד לזהות מאפיינים של משימות שמתאימות לאוטומציה<br>• נבחן דוגמאות אמיתיות של תהליכים ארגוניים שניתן לייעל<br>• נבין איך לחשוב אוטומטית: לפרק תהליך, להגדיר שלבים וכד'<br>• נלמד לזהות שלבים בתהליך בהם יש צורך במעורבות ובקרה אנושית<br>• נצפה בהדגמה בלייב כיצד מתרחש תהליך אוטומטי", mainVideoId: "UdoekxF8UII", instructorVideoId: "YaDDl0hPda8", presentationUrl: "5-1.pdf", workbookUrl: "5-2.pdf" },
-            { id: 6, title: "ממסמכים מורכבים למסר אפקטיבי", type: "lecture", skill: "design", description: "• נבין כיצד לעבד מסמכים ארוכים ומורכבים בעזרת כלי AI<br>• נלמד לאחד מידע ממקורות שונים לכדי מסר ברור<br>• נשתמש ב-AI ליצירת סיכומים, דוחות ותובנות ממידע מורכב<br>• נתרגל יצירת מצגות מעוצבות עם כלי בינה מלאכותית בקלות ובמהירות<br>• נחשף לכלי AI תומכים ליצירת אינפוגרפיקות ועיצוב מסרים", mainVideoId: "INgD5WivUcQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "6-1.pdf", workbookUrl: "6-2.pdf" },
+            { id: 1, title: "עולם של עוזרי AI", type: "lecture", skill: "ai", description: "• נבין כיצד ה-AI מעצב את עתיד הארגונים ומה תפקידם של עוזרי AI<br>• נתרגל שימוש אפקטיבי בעוזרי AI לייעול משימות עבודה<br>• נכיר את הכלים המרכזיים ונתנסה בעבודה עם צ'אטבוטים מתקדמים<br>• נתרגל ניסוח פרומפטים אפקטיביים להשגת תוצאות מדויקות<br>• נלמד עקרונות אבטחת מידע לשימוש בטוח וחכם בעוזרי AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "1-1.pdf", workbookUrl: "1-2.pdf" },
+            { id: 2, title: "ניהול עם בינה מלאכותית", type: "lecture", skill: "management", description: "• נבין מהן המיומנויות החדשות הנדרשות ממנהל בעידן ה-AI<br>• נתרגל שימוש בכלי AI עבור קבלת החלטות, ניתוח מידע ותעדוף משימות<br>• נזהה דרכים בהן AI יכול לתמוך בתהליכי משוב, תקשורת וליווי עובדים<br>• נבין כיצד להשתמש ב-AI לבניית תוכנית עבודה וזיהוי הזדמנויות צמיחה<br>• נגלה איך ליצור סביבת עבודה ארגונית מעודדת חדשנות ושימוש ב-AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "2-1.pdf", workbookUrl: "2-2.pdf" },
+            { id: 3, title: "ניהול ידע ולמידה עם AI", type: "lecture", skill: "research", description: "• נבין איך קצב ההתפתחות של ה-AI משפיע על הלמידה הארגונית<br>• נלמד למפות פערי ידע עם כלי AI ולזהות מגמות וצרכי למידה בארגון<br>• נכיר כלים המאפשרים ליצור תוצרי למידה במהירות ובאיכות גבוהה<br>• ניישם שיטות לשימוש ב-AI ליצירת תוכניות למידה מותאמות אישית<br>• נחקור את תפקידם של אנשי למידה ומש\"א כמובילי שינוי בתחום ה-AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "3-1.pdf", workbookUrl: "3-2.pdf" },
+            { id: 4, title: "Claude בעבודה", type: "lecture", skill: "ai", description: "• נכיר את סביבת העבודה של Claude והכלים המרכזיים בגרסת ה-PRO<br>• נדגים שימוש אפקטיבי ב-Claude Chat לכתיבה, סיכום וניתוח<br>• נלמד איך לעבוד עם Claude Code לפיתוח קוד, בניית כלים ואוטומציות<br>• נגלה איך להשתמש ב-Claude CoWork לעבודה עם קבצים מהמחשב<br>• נבין איך לעבוד עם Claude בצורה יעילה, בטוחה ומעשית", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "4-1.pdf", workbookUrl: "4-2.pdf" },
+            { id: 5, title: "זיהוי הזדמנויות לאוטומציה בארגון", type: "lecture", skill: "innovation", description: "• נלמד לזהות מאפיינים של משימות שמתאימות לאוטומציה<br>• נבחן דוגמאות אמיתיות של תהליכים ארגוניים שניתן לייעל<br>• נבין איך לחשוב אוטומטית: לפרק תהליך, להגדיר שלבים וכד'<br>• נלמד לזהות שלבים בתהליך בהם יש צורך במעורבות ובקרה אנושית<br>• נצפה בהדגמה בלייב כיצד מתרחש תהליך אוטומטי", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "5-1.pdf", workbookUrl: "5-2.pdf" },
+            { id: 6, title: "ממסמכים מורכבים למסר אפקטיבי", type: "lecture", skill: "design", description: "• נבין כיצד לעבד מסמכים ארוכים ומורכבים בעזרת כלי AI<br>• נלמד לאחד מידע ממקורות שונים לכדי מסר ברור<br>• נשתמש ב-AI ליצירת סיכומים, דוחות ותובנות ממידע מורכב<br>• נתרגל יצירת מצגות מעוצבות עם כלי בינה מלאכותית בקלות ובמהירות<br>• נחשף לכלי AI תומכים ליצירת אינפוגרפיקות ועיצוב מסרים", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "6-1.pdf", workbookUrl: "6-2.pdf" },
             { id: 7, title: "ניהול פגישות וישיבות עם AI", type: "lecture", skill: "management", description: "• נלמד להיעזר ב-AI להיערכות מיטבית ודיוק מטרות לקראת הפגישה<br>• נכיר כלי AI שמסייעים בתיאום פגישות וניהול לו\"ז חכם<br>• נתרגל שימוש בכלים חכמים לסיכום פגישות, תמלול והפקת תובנות<br>• נגלה כיצד ליצור תוכניות אופרטיביות וחלוקת משימות אוטומטית<br>• נכיר טכניקות לשימור ידע ומעקב אחר ביצוע עם כלי AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "7-1.pdf", workbookUrl: "7-2.pdf" },
             { id: 8, title: "תמונות וסרטונים עם AI", type: "lecture", skill: "design", description: "• נלמד איך לשלב תוצרים ויזואליים בתהליכי עבודה יומיומיים<br>• נכיר כלי AI ליצירת תמונות מרהיבות ולעריכה מהירה של תמונות<br>• נלמד טכניקות להתאמת התוצר לשפה מקצועית או מותגית<br>• נבין כיצד ליצור עם AI סרטונים קצרים ואנימציות באיכות גבוהה<br>• נתרגל כתיבת פרומפטים אפקטיביים להשגת תוצר ויזואלי מדויק לצורך", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "8-1.pdf", workbookUrl: "8-2.pdf" },
             { id: 9, title: "ניתוח נתונים והפקת תובנות", type: "lecture", skill: "research", description: "• נכיר כלי AI שימושיים לניתוח DATA<br>• נבין כיצד לשלוף נתונים מתוך דוחות ומסמכים מרובים<br>• נפתח יכולת זיהוי מגמות ותובנות עסקיות מנתונים<br>• נתרגל יצירת המחשות ויזואליות חכמות לנתונים באמצעות כלי AI<br>• נלמד כיצד לשמור על אבטחת מידע ולמנוע דליפה של נתונים רגישים", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "9-1.pdf", workbookUrl: "9-2.pdf" },
