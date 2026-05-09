@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>האקדמיה הדיגיטלית - מערכת קורסים</title>
+    
+    <!-- ייבוא פונט Heebo מגוגל פונטס -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- טעינת העיצוב (Tailwind CSS) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- הגדרת הפונט כברירת מחדל ב-Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Heebo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- טעינת אייקונים (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- טעינת מערכת הנגנים של YouTube -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+        /* הסתרת אלמנטים */
+        .hidden { display: none !important; }
+        
+        /* עיצוב פס גלילה */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.5); border-radius: 4px; }
+        
+        /* הסרת מסגרת מנגן יוטיוב */
+        iframe { border: none; }
+
+        /* הנפשת נשימה ירוקה לטקסט */
+        @keyframes text-breathe {
+            0%, 100% { color: #34d399; text-shadow: 0 0 8px rgba(52, 211, 153, 0.6); }
+            50% { color: #065f46; text-shadow: none; }
+        }
+        .animate-text-breathe {
+            animation: text-breathe 2.5s ease-in-out infinite;
+        }
+
+        /* מניעת סימון טקסט במערכת (מוסיף לאבטחה) */
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-[#0A0F1C] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden">
+
+    <!-- מסך התחברות -->
+    <div id="login-screen" class="min-h-screen bg-slate-950 flex items-center justify-center text-white relative z-[100]">
+        <div class="bg-slate-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-800">
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <!-- לוגו ימני (hlogo) -->
+                <img src="hlogo.png" alt="לוגו ימני" class="max-h-12 w-auto max-w-[45%] object-contain">
+                
+                <!-- לוגו שמאלי (logo) -->
+                <img src="logo.png" alt="לוגו שמאלי" class="max-h-12 w-auto max-w-[45%] object-contain">
+            </div>
+            <h1 class="text-2xl font-bold text-center mb-8">כניסה למערכת הקורסים</h1>
+            <form id="login-form" class="space-y-6" onsubmit="return handleLogin(event)">
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">סיסמת גישה</label>
+                    <input
+                        type="password"
+                        id="password-input"
+                        class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors text-right"
+                        placeholder="הזן סיסמה..."
+                        dir="rtl"
+                    />
+                    <p id="error-message" class="text-red-400 text-sm mt-2 hidden"></p>
+                </div>
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+                >
+                    הכנס למערכת
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- מסך המערכת -->
+    <div id="dashboard-screen" class="hidden h-screen flex flex-col">
+        <!-- אזור הדר - לוגו -->
+        <header class="bg-slate-900/50 border-b border-slate-800/50 backdrop-blur-sm h-16 flex-shrink-0">
+            <div class="max-w-[1600px] h-full mx-auto px-6 flex items-center justify-between">
+                
+                <!-- קישורים בפינה הימנית העליונה -->
+                <div class="flex-1 flex items-center gap-2 lg:gap-3">
+                    <button onclick="openExternalLink('https://ai4u.base44.app/')" class="flex items-center gap-2 text-xs lg:text-sm font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-700 px-3 py-1.5 lg:px-4 lg:py-2 rounded-xl border border-slate-700 transition-all shadow-sm">
+                        <i data-lucide="globe" class="w-4 h-4 text-blue-400"></i>
+                        <span>AI Tools</span>
+                    </button>
+                </div>
+                
+                <!-- לוגואים ממורכזים -->
+                <div class="flex items-center justify-center gap-3 h-full">
+                    <!-- לוגו ימני (hlogo) -->
+                    <img src="hlogo.png" alt="לוגו ימני" class="max-h-10 w-auto object-contain">
+                    
+                    <!-- לוגו שמאלי (logo) -->
+                    <img src="logo.png" alt="לוגו שמאלי" class="max-h-10 w-auto object-contain">
+                </div>
+                
+                <div class="flex-1 text-left">
+                    <span class="text-xs bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50 font-bold animate-text-breathe">
+                        מחובר
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- אזור תוכן מרכזי -->
+        <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-4rem)] w-full">
+            
+            <!-- עמודה ימנית: וידאו מרצה + רשימת קורסים -->
+            <aside class="lg:col-span-3 xl:col-span-3 flex flex-col gap-3 h-full overflow-hidden">
+                
+                <!-- נגן וידאו קטן (מרצה) -->
+                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-xl relative aspect-video flex-shrink-0 flex items-center justify-center">
+                    <!-- מצב המתנה -->
+                    <div id="instructor-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400 z-10 transition-opacity">
+                        <i data-lucide="video" class="w-8 h-8 mb-2 opacity-20"></i>
+                        <p class="text-xs font-medium">מצלמת מרצה</p>
+                    </div>
+
+                    <!-- וידאו המרצה (YouTube) -->
+                    <div id="instructor-video-wrapper" class="hidden absolute inset-0 w-full h-full pointer-events-none z-0">
+                        <div id="instructor-video"></div>
+                    </div>
+                    
+                    <div id="instructor-label" class="hidden absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-medium border border-white/10 z-20">
+                        המרצה
+                    </div>
+                </div>
+
+                <!-- רשימת קורסים -->
+                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-800 shadow-xl flex flex-col overflow-hidden">
+                    <div class="p-3 border-b border-slate-800 bg-slate-800/20 flex-shrink-0 flex flex-col gap-2.5">
+                        <h2 class="text-sm font-bold text-white">סינון לפי מיומנות</h2>
+                        <div class="flex flex-wrap gap-1.5 text-[10px] font-medium">
+                            <button id="filter-ai" onclick="toggleFilter('ai')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">אוריינות AI</button>
+                            <button id="filter-research" onclick="toggleFilter('research')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">מחקר ולמידה</button>
+                            <button id="filter-management" onclick="toggleFilter('management')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">ניהול משימות</button>
+                            <button id="filter-innovation" onclick="toggleFilter('innovation')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">חדשנות ופיתוח</button>
+                            <button id="filter-design" onclick="toggleFilter('design')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">עיצוב וגרפיקה</button>
+                        </div>
+                    </div>
+                    
+                    <!-- רשימת השיעורים -->
+                    <div id="lesson-list" class="flex-1 p-1.5 flex flex-col gap-0.5 overflow-y-auto custom-scrollbar">
+                        <!-- פריטי הרשימה ייווצרו כאן דינמית -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- עמודה שמאלית: וידאו ראשי -->
+            <section class="lg:col-span-9 xl:col-span-9 flex flex-col h-full bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden relative">
+                
+                <!-- מצב המתנה -->
+                <div id="main-placeholder" class="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 z-10 relative">
+                    <div class="w-20 h-20 mb-4 rounded-full bg-slate-800 flex items-center justify-center shadow-inner">
+                        <i data-lucide="play" class="w-8 h-8 text-slate-600 ml-1"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-300 mb-2">ברוכים הבאים לקורס</h2>
+                    <p class="text-sm text-slate-400 text-center max-w-md">
+                        כדי להתחיל בלמידה, אנא בחר שיעור מהתפריט שמימין לקבלת פרטים והפעלת ההרצאה.
+                    </p>
+                </div>
+
+                <!-- נגן הוידאו הראשי (YouTube) -->
+                <div id="main-video-container" class="hidden absolute inset-0 w-full h-full bg-black z-0">
+                    <div id="main-video"></div>
+                    
+                    <!-- חלונית המידע שמופיעה ונעלמת על הוידאו -->
+                    <div id="video-info-overlay" class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-lg shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none z-20">
+                        <h3 id="current-lesson-title" class="text-sm font-bold text-blue-400"></h3>
+                        <p id="current-lesson-type" class="text-[10px] text-slate-400 mt-0.5"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- חלון צף (Modal) לפרטי השיעור -->
+    <div id="lesson-modal" class="hidden fixed inset-0 z-[150] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-full p-1.5 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-5 pr-2">
+                <span id="modal-icon" class="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold"></span>
+                <div>
+                    <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
+                    <p id="modal-type" class="text-xs text-slate-400 mt-0.5"></p>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800/40 rounded-xl p-4 mb-6 border border-slate-700/50">
+                <h3 id="modal-info-title" class="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-blue-400"></i>
+                    מה נלמד בשיעור זה?
+                </h3>
+                <p id="modal-desc" class="text-sm text-slate-400 leading-relaxed"></p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button id="modal-btn-presentation" onclick="openResource('presentation')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors">
+                    <i data-lucide="file-text" class="w-4 h-4 text-red-400"></i>
+                    <span>מצגת הקורס</span>
+                </button>
+                <button id="modal-btn-workbook" onclick="openResource('workbook')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors">
+                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i>
+                    <span>חוברת תרגול</span>
+                </button>
+            </div>
+            
+            <button id="modal-play-btn" onclick="playFromModal()" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all">
+                <i data-lucide="play" class="w-5 h-5"></i>
+                <span id="modal-play-text">התחל צפייה</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- לוגיקה ו-JavaScript -->
+    <script>
+        // --- חסימת מקש ימני בכל המערכת למניעת העתקות ושמירות ---
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // =====================================================================
+        // [אזור הנתונים]
+        // =====================================================================
+        const skillsMap = {
+            'ai': 'אוריינות AI',
+            'research': 'מחקר ולמידה',
+            'management': 'ניהול משימות',
+            'innovation': 'חדשנות ופיתוח',
+            'design': 'עיצוב וגרפיקה'
+        };
+
+        const lessonsData = [
+            // --- הרצאות ---
+            { id: 1, title: "עולם של עוזרי AI", type: "lecture", skill: "ai", description: "• נבין כיצד ה-AI מעצב את עתיד הארגונים ומה תפקידם של עוזרי AI<br>• נתרגל שימוש אפקטיבי בעוזרי AI לייעול משימות עבודה<br>• נכיר את הכלים המרכזיים ונתנסה בעבודה עם צ'אטבוטים מתקדמים<br>• נתרגל ניסוח פרומפטים אפקטיביים להשגת תוצאות מדויקות<br>• נלמד עקרונות אבטחת מידע לשימוש בטוח וחכם בעוזרי AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "1-1.pdf", workbookUrl: "1-2.pdf" },
+            { id: 2, title: "ניהול עם בינה מלאכותית", type: "lecture", skill: "management", description: "• נבין מהן המיומנויות החדשות הנדרשות ממנהל בעידן ה-AI<br>• נתרגל שימוש בכלי AI עבור קבלת החלטות, ניתוח מידע ותעדוף משימות<br>• נזהה דרכים בהן AI יכול לתמוך בתהליכי משוב, תקשורת וליווי עובדים<br>• נבין כיצד להשתמש ב-AI לבניית תוכנית עבודה וזיהוי הזדמנויות צמיחה<br>• נגלה איך ליצור סביבת עבודה ארגונית מעודדת חדשנות ושימוש ב-AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "2-1.pdf", workbookUrl: "2-2.pdf" },
+            { id: 3, title: "ניהול ידע ולמידה עם AI", type: "lecture", skill: "research", description: "• נבין איך קצב ההתפתחות של ה-AI משפיע על הלמידה הארגונית<br>• נלמד למפות פערי ידע עם כלי AI ולזהות מגמות וצרכי למידה בארגון<br>• נכיר כלים המאפשרים ליצור תוצרי למידה במהירות ובאיכות גבוהה<br>• ניישם שיטות לשימוש ב-AI ליצירת תוכניות למידה מותאמות אישית<br>• נחקור את תפקידם של אנשי למידה ומש\"א כמובילי שינוי בתחום ה-AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "3-1.pdf", workbookUrl: "3-2.pdf" },
+            { id: 4, title: "Claude בעבודה", type: "lecture", skill: "ai", description: "• נכיר את סביבת העבודה של Claude והכלים המרכזיים בגרסת ה-PRO<br>• נדגים שימוש אפקטיבי ב-Claude Chat לכתיבה, סיכום וניתוח<br>• נלמד איך לעבוד עם Claude Code לפיתוח קוד, בניית כלים ואוטומציות<br>• נגלה איך להשתמש ב-Claude CoWork לעבודה עם קבצים מהמחשב<br>• נבין איך לעבוד עם Claude בצורה יעילה, בטוחה ומעשית", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "4-1.pdf", workbookUrl: "4-2.pdf" },
+            { id: 5, title: "זיהוי הזדמנויות לאוטומציה בארגון", type: "lecture", skill: "innovation", description: "• נלמד לזהות מאפיינים של משימות שמתאימות לאוטומציה<br>• נבחן דוגמאות אמיתיות של תהליכים ארגוניים שניתן לייעל<br>• נבין איך לחשוב אוטומטית: לפרק תהליך, להגדיר שלבים וכד'<br>• נלמד לזהות שלבים בתהליך בהם יש צורך במעורבות ובקרה אנושית<br>• נצפה בהדגמה בלייב כיצד מתרחש תהליך אוטומטי", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "5-1.pdf", workbookUrl: "5-2.pdf" },
+            { id: 6, title: "ממסמכים מורכבים למסר אפקטיבי", type: "lecture", skill: "design", description: "• נבין כיצד לעבד מסמכים ארוכים ומורכבים בעזרת כלי AI<br>• נלמד לאחד מידע ממקורות שונים לכדי מסר ברור<br>• נשתמש ב-AI ליצירת סיכומים, דוחות ותובנות ממידע מורכב<br>• נתרגל יצירת מצגות מעוצבות עם כלי בינה מלאכותית בקלות ובמהירות<br>• נחשף לכלי AI תומכים ליצירת אינפוגרפיקות ועיצוב מסרים", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "6-1.pdf", workbookUrl: "6-2.pdf" },
+            { id: 7, title: "ניהול פגישות וישיבות עם AI", type: "lecture", skill: "management", description: "• נלמד להיעזר ב-AI להיערכות מיטבית ודיוק מטרות לקראת הפגישה<br>• נכיר כלי AI שמסייעים בתיאום פגישות וניהול לו\"ז חכם<br>• נתרגל שימוש בכלים חכמים לסיכום פגישות, תמלול והפקת תובנות<br>• נגלה כיצד ליצור תוכניות אופרטיביות וחלוקת משימות אוטומטית<br>• נכיר טכניקות לשימור ידע ומעקב אחר ביצוע עם כלי AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "7-1.pdf", workbookUrl: "7-2.pdf" },
+            { id: 8, title: "תמונות וסרטונים עם AI", type: "lecture", skill: "design", description: "• נלמד איך לשלב תוצרים ויזואליים בתהליכי עבודה יומיומיים<br>• נכיר כלי AI ליצירת תמונות מרהיבות ולעריכה מהירה של תמונות<br>• נלמד טכניקות להתאמת התוצר לשפה מקצועית או מותגית<br>• נבין כיצד ליצור עם AI סרטונים קצרים ואנימציות באיכות גבוהה<br>• נתרגל כתיבת פרומפטים אפקטיביים להשגת תוצר ויזואלי מדויק לצורך", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "8-1.pdf", workbookUrl: "8-2.pdf" },
+            { id: 9, title: "ניתוח נתונים והפקת תובנות", type: "lecture", skill: "research", description: "• נכיר כלי AI שימושיים לניתוח DATA<br>• נבין כיצד לשלוף נתונים מתוך דוחות ומסמכים מרובים<br>• נפתח יכולת זיהוי מגמות ותובנות עסקיות מנתונים<br>• נתרגל יצירת המחשות ויזואליות חכמות לנתונים באמצעות כלי AI<br>• נלמד כיצד לשמור על אבטחת מידע ולמנוע דליפה של נתונים רגישים", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "9-1.pdf", workbookUrl: "9-2.pdf" },
+            { id: 10, title: "תכנון ובניית סוכני AI", type: "lecture", skill: "innovation", description: "• נבין מהו סוכן AI ואילו משימות הוא מסוגל לבצע באופן עצמאי<br>• נלמד להגדיר סוכן: מקבלת קלט ועד לביצוע התוצר הסופי<br>• נזהה שלבים בתהליכים ארגוניים שניתן לבצע באמצעות סוכני AI<br>• נלמד לזהות שלבים בתהליך בהם יש צורך במעורבות ובקרה אנושית<br>• נצפה בהדגמה בלייב של רצף פעולות המתבצעות ע\"י סוכן AI", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "10-1.pdf", workbookUrl: "10-2.pdf" },
+            { id: 11, title: "יצירת בוטים למשימות חוזרות", type: "lecture", skill: "management", description: "• נבין איך בוטים פשוטים יכולים לחסוך זמן בביצוע משימות יומיומיות<br>• נלמד לזהות משימות שחוזרות על עצמן ומתאימות ליצירת בוט בסיסי<br>• נתרגל בנייה של בוטים בעזרת כלי AI ללא ידע טכני או כתיבת קוד<br>• נלמד להתאים את השפה, הסגנון והפעולות - לצרכים אישיים או צוותיים<br>• נכיר בוטים מוכנים מראש בכלים מובילים ונלמד כיצד להפעילם", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "11-1.pdf", workbookUrl: "11-2.pdf" },
+            { id: 12, title: "איך להיות AI Leader", type: "lecture", skill: "ai", description: "• נבחן את המיומנויות המרכזיות שמגדירות מומחי AI<br>• נלמד איך להישאר 'עם היד על הדופק' בעולם ה-AI ולהתעדכן בחידושים<br>• נתרגל שימוש ב-AI לשיפור הניהול עצמי, קבלת החלטות ופתרון בעיות<br>• נבין מה נדרש כדי לפתח בתוך הארגון קבוצה של מובילי AI<br>• נלמד איך ליצור סביבת עבודה שתומכת בקידום חדשנות AI בארגון", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "12-1.pdf", workbookUrl: "12-2.pdf" },
+            { id: 13, title: "איתור מידע ו-Deep Research", type: "lecture", skill: "research", description: "• נלמד לבצע חיפוש מידע מדויק וממוקד בעזרת כלי AI<br>• נתרגל טכניקות לשמירה על אמינות ואיתור מקורות מידע רלוונטיים<br>• נשתמש בכלי מחקר מתקדמים לסיכום מאמרים וסקירת תכנים מקצועיים<br>• נכיר את פונקציית ה–Deep Research בכלי LLM לביצוע תהליך מעמיק<br>• נלמד להשתמש במידע שנאסף כדי להפיק תובנות ולקבל החלטות", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "13-1.pdf", workbookUrl: "13-2.pdf" },
+            { id: 14, title: "בניית כלים ואפליקציות עם AI", type: "lecture", skill: "innovation", description: "• נכיר כלי Vibe Coding המאפשרים ליצור אפליקציות וכלים מפרומפט<br>• נלמד את עקרונות העבודה: מהגדרת צורך ועד קבלת התוצר<br>• נזהה הזדמנויות ארגוניות לשילוב כלים חכמים ואפליקציות תומכות<br>• נצפה בהדגמות לייב שממחישות את תהליך הבנייה<br>• נבין אילו סוגי תוצרים ניתן ליצור - דבשורדים, דפי נחיתה, מחשבונים ועוד...", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "14-1.pdf", workbookUrl: "14-2.pdf" },
+            { id: 15, title: "כלים לבניית אוטומציות", type: "lecture", skill: "innovation", description: "• נבין כיצד לתרגם תהליך עבודה ל-Workflow בסיסי<br>• נלמד איך לבנות תהליך אוטומטי פשוט: מטריגר עד פעולה<br>• נכיר את הכלים המובילים לבניית תהליכי אוטומציה ללא קוד<br>• נגלה כיצד לבצע חיבורים למערכות ואפליקציות חיצוניות<br>• נצפה בהדגמה בלייב של בניית Workflow אוטומטי", mainVideoId: "aqz-KE-bpKQ", instructorVideoId: "eRsGyueVLvQ", presentationUrl: "15-1.pdf", workbookUrl: "15-2.pdf" },
+            
+            // --- סדנאות מעשיות ---
+            { id: 16, title: "סדנת ChatGPT", type: "workshop", skill: "ai", description: "<b class='text-white block mb-1'>להכיר מקרוב את הכלי הפופלרי ביותר בעולם ה-AI</b><br><b class='text-blue-400 block mt-2 mb-1'>בסיום הסדנה תדעו:</b>• לעשות Deep Research על שווקים, טרנדים ומחקרים<br>• ליצור ולהשתמש ב-GPTs מותאמים אישית<br>• ליצור ולנתח תמונות, מסמכים ונתונים<br>• להשתמש ב-Canvas כדי ליצור ולערוך טקסטים וקבצים<br>• לקבל מידע עדכני מהאינטרנט בעזרת ה-Web Search<br>• לחבר את ChatGPT לאפליקציות חיצוניות<br>• כיצד לשמור על אבטחת מידע ופרטיות עם ChatGPT<br>• להשתמש ביכולות המתקדמות של חשבון בתשלום<br><br><b class='text-blue-400 block mb-1'>מומלץ להכין מראש:</b>• דוגמאות ממשימות העבודה שלך עבור התרגול בסדנה<br>• חשבון משתמש רשום ב-Open AI<br><br><small class='text-slate-500'>*בסדנה יוצגו גם פיצ'רים מתוך המנוי בתשלום</small>", mainVideoId: "G3AvM-q3R0E", instructorVideoId: "bTiv_yxFUM0", presentationUrl: "16-1.pdf", workbookUrl: "https://digitalculture-workshop-chatgpt.lovable.app/" },
+            { id: 17, title: "סדנת Copilot", type: "workshop", skill: "ai", description: "<b class='text-white block mb-1'>עוזר ה-AI שמשתלב בסביבת העבודה של Microsoft</b><br><b class='text-blue-400 block mt-2 mb-1'>בסיום הסדנה תדעו:</b>• להפוך רעיונות למצגת מעוצבת עם Copilot ב-PowerPoint<br>• לנתח ולקבל תובנות מיידיות מהנתונים שלכם ב-Excel<br>• לנסח ולערוך טקסטים ב-Word עם Copilot<br>• לנהל מיילים ומשימות ביעילות ע\"י שילוב יכולות AI ב-Outlook<br>• ניהול חכם של פגישות וישיבות ב-Teams<br>• לחבר בין Copilot לתוכן הארגוני ולשדרג את שימור הידע בארגון<br>• כיצד לשמור על אבטחת מידע ופרטיות עם Copilot<br>• להשתמש ביכולות המתקדמות של חשבון בתשלום<br><br><b class='text-blue-400 block mb-1'>מומלץ להכין מראש:</b>• דוגמאות ממשימות העבודה שלך עבור התרגול בסדנה<br>• חשבון משתמש ב-Copilot<br><br><small class='text-slate-500'>*בסדנה יוצגו גם פיצ'רים מתוך המנוי בתשלום</small>", mainVideoId: "cx9lvxEFRYA", instructorVideoId: "ckPYOidV2xE", presentationUrl: "17-1.pdf", workbookUrl: "https://digitalculture-workshop-copilot.lovable.app/" },
+            { id: 18, title: "סדנת Gemini", type: "workshop", skill: "ai", description: "<b class='text-white block mb-1'>להכיר את הדור החדש של ה-AI מבית גוגל</b><br><b class='text-blue-400 block mt-2 mb-1'>בסיום הסדנה תדעו:</b>• ליצור תוכן מהיר: אימיילים, מצגות ודו\"חות עם Gemini<br>• לדבר עם Gemini Live בשילוב שיחה קולית ושיתוף מסך<br>• ליצור עם AI Studio תמונות (Nano Banana), סרטונים ועוד<br>• לנתח ולסכם קבצים ומחקרים ארוכים עם NotebookLM<br>• לבנות כלי AI מותאמים אישית (Gems) למשימות ספציפיות<br>• להפוך מסמכים לתוכן: ליצור פודקאסטים, סרטונים ושאלונים<br>• כיצד לשמור על אבטחת מידע ופרטיות עם Gemini<br>• להטמיע את כלי ה-AI של גוגל בתוך Google Workspace<br><br><b class='text-blue-400 block mb-1'>מומלץ להכין מראש:</b>• דוגמאות ממשימות העבודה שלך עבור התרגול בסדנה<br>• חשבון Google פעיל<br><br><small class='text-slate-500'>*בסדנה יוצגו גם פיצ'רים מתוך המנוי בתשלום</small>", mainVideoId: "_TjnY8GuFHM", instructorVideoId: "baKPj_cg9k8", presentationUrl: "18-1.pdf", workbookUrl: "https://digitalculture-workshop-gemini.lovable.app/" },
+            { id: 19, title: "סדנת Vibe Coding", type: "workshop", skill: "innovation", description: "<b class='text-white block mb-1'>לתרגם רעיונות לאפליקציות ומיני-אתרים בלי לכתוב קוד</b><br><b class='text-blue-400 block mt-2 mb-1'>בסיום הסדנה תדעו:</b>• ליצור אפליקציה מעוצבת על בסיס פרומפט איכותי<br>• להשתמש בכלי Vibe coding כדי להפוך רעיון לאתר בקליק<br>• לבנות ב-Base44 כלי ווב ודפי נחיתה מדויקים לצרכים שלכם<br>• לזהות משימות עבודה שניתן לייעל ע\"י בניית כלי ווב פשוט<br>• להפוך את הכלי שבניתם לזמין לשימוש<br>• לחבר את כלי ה-Vibe Coding לכלים חיצוניים<br>• כיצד לשמור על אבטחת מידע ופרטיות עם כלים אלו<br>• להטמיע את השימוש בכלי Vibe Coding בשגרה היום-יומית<br><br><b class='text-blue-400 block mb-1'>מומלץ להכין מראש:</b>• רעיון לכלי ווב פשוט (כגון כלי חישוב אוטומטי, דף נחיתה וכד') שתרצו ליצור.<br>• לפתוח חשבון בסיסי ב-Base44 לצורך תרגול מעשי.", mainVideoId: "oOiSW_Z6lsI", instructorVideoId: "q0QiKKijwk4", presentationUrl: "19-1.pdf", workbookUrl: "https://digitalculture-workshop-vibe-coding.lovable.app/" },
+            { id: 20, title: "סדנת אוטומציה", type: "workshop", skill: "innovation", description: "<b class='text-white block mb-1'>להפוך משימות חוזרות לתהליכים אוטומטיים חכמים</b><br><b class='text-blue-400 block mt-2 mb-1'>בסיום הסדנה תדעו:</b>• לבנות תהליך עבודה אוטומטי בכלי AI<br>• לשלב מודלי שפה בתהליך האוטומציה<br>• לאתר ולתקן תקלות בתהליכי אוטומציה<br>• לזהות משימות שניתן לייעל ע\"י בניית אוטומציה<br>• להפוך את הכלי שבניתם לזמין לשימוש<br>• ליצור חיבורים מתקדמים (APIs, Webhooks) לכלים חיצוניים<br>• כיצד לשמור על אבטחת מידע ופרטיות עם כלים אלו<br>• להטמיע את השימוש בכלי אוטומציה בשגרת היום-יום<br><br><b class='text-blue-400 block mb-1'>מומלץ להכין מראש:</b>• משימה חוזרת שכוללת כמה שלבי עבודה, שתרצו להפוך לאוטומטית.<br>• לפתוח חשבון בסיסי ב-Make לצורך תרגול מעשי.", mainVideoId: "9TIDvtfGsQs", instructorVideoId: "iPYufW_lq6E", presentationUrl: "20-1.pdf", workbookUrl: "20-2.pdf" }
+        ];
+
+        if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+
+        // --- סיסמה מקודדת Base64 (המקור: Haaretz2026) ---
+        const ENCODED_PASSWORD = "SGFhcmV0ejIwMjY=";
+        
+        let activeLessonId = null;
+        let selectedLessonForModal = null; 
+        let currentFilter = 'all'; 
+        let overlayTimeout = null; 
+
+        // --- משתני YouTube API ---
+        let mainPlayer = null;
+        let instructorPlayer = null;
+        let isYoutubeReady = false;
+
+        function onYouTubeIframeAPIReady() {
+            isYoutubeReady = true;
+        }
+
+        // --- אלמנטים ב-DOM ---
+        const loginScreen = document.getElementById('login-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const loginForm = document.getElementById('login-form');
+        const passwordInput = document.getElementById('password-input');
+        const errorMessage = document.getElementById('error-message');
+
+        const mainPlaceholder = document.getElementById('main-placeholder');
+        const mainVideoContainer = document.getElementById('main-video-container');
+        const videoInfoOverlay = document.getElementById('video-info-overlay');
+        const instructorPlaceholder = document.getElementById('instructor-placeholder');
+        const instructorWrapper = document.getElementById('instructor-video-wrapper');
+        const instructorLabel = document.getElementById('instructor-label');
+        const currentLessonTitle = document.getElementById('current-lesson-title');
+        const currentLessonType = document.getElementById('current-lesson-type');
+        const lessonList = document.getElementById('lesson-list');
+        
+        const modal = document.getElementById('lesson-modal');
+        const modalIcon = document.getElementById('modal-icon');
+        const modalTitle = document.getElementById('modal-title');
+        const modalType = document.getElementById('modal-type');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalInfoTitle = document.getElementById('modal-info-title');
+        const modalPlayBtn = document.getElementById('modal-play-btn');
+        const modalPlayText = document.getElementById('modal-play-text');
+        
+        const btnPresentation = document.getElementById('modal-btn-presentation');
+        const btnWorkbook = document.getElementById('modal-btn-workbook');
+        
+        // --- מערכת התחברות עם Base64 ---
+        function handleLogin(e) {
+            e.preventDefault();
+            // קידוד הקלט של המשתמש והשוואה לסיסמה המקודדת (עם ניקוי רווחים בטעות)
+            const inputEncoded = btoa(passwordInput.value.trim());
+            
+            if (inputEncoded === ENCODED_PASSWORD) {
+                loginScreen.classList.add('hidden');
+                dashboardScreen.classList.remove('hidden');
+                renderList();
+            } else {
+                errorMessage.textContent = "סיסמה שגויה, אנא נסה שנית";
+                errorMessage.classList.remove('hidden');
+            }
+            return false;
+        }
+
+        // --- הופעת תווית המידע על הוידאו ---
+        function triggerOverlay() {
+            videoInfoOverlay.classList.remove('opacity-0');
+            videoInfoOverlay.classList.add('opacity-100');
+            clearTimeout(overlayTimeout);
+            
+            overlayTimeout = setTimeout(() => {
+                videoInfoOverlay.classList.remove('opacity-100');
+                videoInfoOverlay.classList.add('opacity-0');
+            }, 3500);
+        }
+
+        // --- ניהול מודל (חלון צף) ---
+        function openModal(lessonId) {
+            const lesson = lessonsData.find(l => l.id === lessonId);
+            if (!lesson) return;
+            
+            selectedLessonForModal = lesson;
+            
+            modalTitle.textContent = lesson.title;
+            // שימוש ב-innerHTML כדי שיזהה את תגיות ה-<br>
+            modalDesc.innerHTML = lesson.description;
+            modalType.textContent = lesson.type === 'lecture' ? 'הרצאה תיאורטית' : 'סדנא מעשית';
+            
+            // הסתרת הכותרת "מה נלמד בשיעור זה" עבור סדנאות
+            if (lesson.type === 'workshop') {
+                modalInfoTitle.classList.add('hidden');
+                modalInfoTitle.classList.remove('flex');
+            } else {
+                modalInfoTitle.classList.remove('hidden');
+                modalInfoTitle.classList.add('flex');
+            }
+            
+            modalIcon.innerHTML = `<i data-lucide="${lesson.type === 'lecture' ? 'video' : 'laptop'}" class="w-5 h-5"></i>`;
+            modalIcon.className = `w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold ${
+                lesson.type === 'lecture' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'
+            }`;
+
+            // הסתרה/הצגה של כפתורי חומרים בהתאם לנתונים
+            if (lesson.presentationUrl && lesson.presentationUrl.trim() !== "") {
+                btnPresentation.classList.remove('hidden');
+                btnPresentation.classList.add('flex');
+            } else {
+                btnPresentation.classList.add('hidden');
+                btnPresentation.classList.remove('flex');
+            }
+
+            if (lesson.workbookUrl && lesson.workbookUrl.trim() !== "") {
+                btnWorkbook.classList.remove('hidden');
+                btnWorkbook.classList.add('flex');
+            } else {
+                btnWorkbook.classList.add('hidden');
+                btnWorkbook.classList.remove('flex');
+            }
+
+            // כפתור צפייה/המשך צפייה
+            if (activeLessonId === lesson.id) {
+                modalPlayBtn.className = "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all bg-slate-800 text-blue-400 border border-slate-700 hover:bg-slate-700";
+                modalPlayText.textContent = "המשך צפייה";
+            } else {
+                modalPlayBtn.className = "w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20";
+                modalPlayText.textContent = "התחל צפייה";
+            }
+            
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            selectedLessonForModal = null;
+        }
+
+        function playFromModal() {
+            if (selectedLessonForModal) {
+                playLesson(selectedLessonForModal.id);
+                closeModal();
+            }
+        }
+
+        // --- שדרוג אבטחה: פתיחה בחלון קופץ נקי ---
+        function openResource(type) {
+            if (!selectedLessonForModal) return;
+            let targetUrl = '';
+            
+            if (type === 'presentation' && selectedLessonForModal.presentationUrl) {
+                targetUrl = selectedLessonForModal.presentationUrl;
+            } else if (type === 'workbook' && selectedLessonForModal.workbookUrl) {
+                targetUrl = selectedLessonForModal.workbookUrl;
+            }
+
+            if (targetUrl) {
+                // הגדרת חלון ללא סרגלי כלים (ללא שורת כתובת מובהקת וללא כפתורים)
+                const windowFeatures = "menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=800,top=100,left=100";
+                window.open(targetUrl, 'CourseResource', windowFeatures);
+            }
+        }
+
+        // פתיחת קישורים חיצוניים בחלון קופץ זהה
+        function openExternalLink(url) {
+            const windowFeatures = "menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes,width=1000,height=800,top=100,left=100";
+            window.open(url, 'ExternalTool', windowFeatures);
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // --- הפעלת שיעור ביוטיוב ---
+        function playLesson(lessonId) {
+            const lesson = lessonsData.find(l => l.id === lessonId);
+            if (!lesson) return;
+
+            if (!isYoutubeReady) {
+                alert("מערכת הוידאו עדיין נטענת. אנא המתן שניה ונסה שוב.");
+                return;
+            }
+
+            activeLessonId = lesson.id;
+            
+            currentLessonTitle.textContent = lesson.title;
+            currentLessonType.textContent = lesson.type === 'lecture' ? 'הרצאה תיאורטית' : 'סדנא מעשית';
+
+            mainPlaceholder.classList.add('hidden');
+            mainVideoContainer.classList.remove('hidden');
+            instructorPlaceholder.classList.add('hidden');
+            instructorWrapper.classList.remove('hidden');
+            instructorLabel.classList.remove('hidden');
+            
+            triggerOverlay();
+
+            if (!mainPlayer) {
+                mainPlayer = new YT.Player('main-video', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: lesson.mainVideoId,
+                    playerVars: {
+                        'rel': 0, 
+                        'modestbranding': 1, 
+                        'playsinline': 1,
+                        // מאפשר גישה רק מהדומיין שלך (עובד רק אם הוגדר ב-API, אך מוסיף שכבת הגנה)
+                        'origin': window.location.origin 
+                    },
+                    events: {
+                        'onStateChange': onMainPlayerStateChange
+                    }
+                });
+
+                instructorPlayer = new YT.Player('instructor-video', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: lesson.instructorVideoId,
+                    playerVars: {
+                        'rel': 0,
+                        'modestbranding': 1,
+                        'controls': 0, 
+                        'disablekb': 1, 
+                        'playsinline': 1,
+                        'origin': window.location.origin
+                    },
+                    events: {
+                        'onReady': (e) => {
+                            e.target.mute(); 
+                        }
+                    }
+                });
+            } else {
+                mainPlayer.loadVideoById(lesson.mainVideoId);
+                instructorPlayer.loadVideoById(lesson.instructorVideoId);
+            }
+
+            renderList(); 
+        }
+
+        // --- סנכרון הנגנים ---
+        function onMainPlayerStateChange(event) {
+            triggerOverlay();
+            
+            if (!instructorPlayer || typeof instructorPlayer.playVideo !== 'function') return;
+
+            if (event.data === YT.PlayerState.PLAYING) {
+                const mainTime = mainPlayer.getCurrentTime();
+                const instTime = instructorPlayer.getCurrentTime();
+                if (Math.abs(mainTime - instTime) > 0.5) {
+                    instructorPlayer.seekTo(mainTime, true);
+                }
+                instructorPlayer.playVideo();
+            } 
+            else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.BUFFERING) {
+                instructorPlayer.pauseVideo();
+            }
+            else if (event.data === YT.PlayerState.ENDED) {
+                instructorPlayer.stopVideo();
+            }
+        }
+
+        // --- סינון תוכן עניינים לפי מיומנויות ---
+        function toggleFilter(skillId) {
+            if (currentFilter === skillId) {
+                currentFilter = 'all'; 
+            } else {
+                currentFilter = skillId; 
+            }
+            
+            const allSkills = ['ai', 'research', 'management', 'innovation', 'design'];
+            allSkills.forEach(id => {
+                const btn = document.getElementById('filter-' + id);
+                if (!btn) return;
+                if (currentFilter === id) {
+                    btn.className = "bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded-md transition-colors font-bold";
+                } else {
+                    btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-400 border border-transparent px-2 py-1 rounded-md transition-colors";
+                }
+            });
+            
+            renderList();
+        }
+
+        // --- רינדור רשימה צדדית ---
+        function renderList() {
+            lessonList.innerHTML = '';
+            
+            let filteredLessons = currentFilter === 'all' 
+                ? [...lessonsData] 
+                : lessonsData.filter(lesson => lesson.skill === currentFilter);
+            
+            // סידור מחדש: סדנאות מופיעות לפני הרצאות
+            filteredLessons.sort((a, b) => {
+                if (a.type === 'workshop' && b.type === 'lecture') return -1;
+                if (a.type === 'lecture' && b.type === 'workshop') return 1;
+                return a.id - b.id; // שומר על הסדר המספרי בתוך כל קבוצה (16-20, ואז 1-15)
+            });
+            
+            filteredLessons.forEach((lesson, index) => {
+                const isActive = activeLessonId === lesson.id;
+                const isLecture = lesson.type === 'lecture';
+                
+                const typeClass = isLecture ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400';
+                const textClass = isActive ? 'text-blue-400' : 'text-slate-200';
+                const borderClass = isActive ? 'border border-blue-500/30 bg-slate-800/60' : 'border border-transparent bg-slate-800/20 hover:bg-slate-800/40';
+
+                // תגיות בולטות להרצאה או סדנא
+                const typeBadge = isLecture
+                    ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 leading-none">הרצאה</span>`
+                    : `<span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 leading-none">סדנא</span>`;
+
+                const itemHtml = `
+                    <button onclick="openModal(${lesson.id})" class="w-full px-2.5 py-2 flex items-center justify-between text-right rounded-lg transition-all duration-200 ${borderClass} group">
+                        <div class="flex items-center gap-3 w-full overflow-hidden">
+                            <span class="w-7 h-7 flex-shrink-0 rounded-md flex items-center justify-center text-[12px] font-bold ${typeClass}">
+                                ${index + 1}
+                            </span>
+                            <div class="flex flex-col items-start truncate overflow-hidden">
+                                <span class="text-[13px] font-medium ${textClass} truncate w-full text-right mb-0.5">
+                                    ${lesson.title}
+                                </span>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    ${typeBadge}
+                                    <span class="text-[10px] text-slate-400 truncate">${skillsMap[lesson.skill]}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 ml-1">
+                        ${isActive 
+                            ? `<i data-lucide="play-circle" class="w-4 h-4 text-blue-400"></i>` 
+                            : `<i data-lucide="info" class="w-4 h-4 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>`
+                        }
+                        </div>
+                    </button>
+                `;
+                
+                lessonList.insertAdjacentHTML('beforeend', itemHtml);
+            });
+
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+        }
+    </script>
+</body>
+</html>
