@@ -88,16 +88,16 @@
         }
     </style>
 </head>
-<body class="bg-[#0A0F1C] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden">
+<body class="bg-[#0A0F1C] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden lg:overflow-hidden h-screen flex flex-col">
 
     <!-- מסך התחברות -->
-    <div id="login-screen" class="min-h-screen bg-slate-950 flex items-center justify-center text-white relative z-[100]">
-        <div class="bg-slate-900 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-800">
+    <div id="login-screen" class="min-h-screen bg-slate-950 flex items-center justify-center text-white relative z-[100] fixed inset-0 w-full h-full">
+        <div class="bg-slate-900 p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-800 m-4">
             <div class="flex items-center justify-center gap-4 mb-8">
                 <img src="hlogo.png" alt="לוגו ימני" class="max-h-12 w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
                 <img src="logo.png" alt="לוגו שמאלי" class="max-h-12 w-auto max-w-[45%] object-contain" onerror="this.style.display='none'">
             </div>
-            <h1 class="text-2xl font-bold text-center mb-8">כניסה למערכת הקורסים</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-center mb-8">כניסה למערכת הקורסים</h1>
             <form id="login-form" class="space-y-6" onsubmit="return handleLogin(event)">
                 <div>
                     <label class="block text-sm font-medium text-slate-400 mb-2">סיסמת גישה</label>
@@ -112,162 +112,163 @@
     </div>
 
     <!-- מסך המערכת -->
-    <div id="dashboard-screen" class="hidden h-screen flex flex-col">
+    <div id="dashboard-screen" class="hidden flex-1 flex flex-col w-full h-full">
         <!-- אזור הדר - לוגו -->
-        <header class="bg-slate-900/50 border-b border-slate-800/50 backdrop-blur-sm h-16 flex-shrink-0">
-            <div class="max-w-[1600px] h-full mx-auto px-6 flex items-center justify-between">
+        <header class="bg-slate-900/50 border-b border-slate-800/50 backdrop-blur-sm h-14 md:h-16 flex-shrink-0">
+            <div class="max-w-[1600px] h-full mx-auto px-4 md:px-6 flex items-center justify-between">
                 <div class="flex-1 flex items-center gap-2 lg:gap-3">
                     <button onclick="openExternalLink('https://ai4u.base44.app/')" class="flex items-center gap-2 text-xs lg:text-sm font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-700 px-3 py-1.5 lg:px-4 lg:py-2 rounded-xl border border-slate-700 transition-all shadow-sm cursor-pointer">
                         <i data-lucide="globe" class="w-4 h-4 text-blue-400"></i>
-                        <span>AI Tools</span>
+                        <span class="hidden sm:inline">AI Tools</span>
                     </button>
                 </div>
-                <div class="flex items-center justify-center gap-3 h-full">
-                    <img src="hlogo.png" alt="לוגו ימני" class="max-h-10 w-auto object-contain" onerror="this.style.display='none'">
-                    <img src="logo.png" alt="לוגו שמאלי" class="max-h-10 w-auto object-contain" onerror="this.style.display='none'">
+                <div class="flex items-center justify-center gap-2 md:gap-3 h-full">
+                    <img src="hlogo.png" alt="לוגו ימני" class="max-h-8 md:max-h-10 w-auto object-contain" onerror="this.style.display='none'">
+                    <img src="logo.png" alt="לוגו שמאלי" class="max-h-8 md:max-h-10 w-auto object-contain hidden sm:block" onerror="this.style.display='none'">
                 </div>
-                <div class="flex-1 text-left">
-                    <span class="text-xs bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50 font-bold animate-text-breathe">
+                <div class="flex-1 text-left flex justify-end">
+                    <span class="text-[10px] md:text-xs bg-slate-800/50 px-2 py-1 md:px-3 rounded-full border border-slate-700/50 font-bold animate-text-breathe hidden sm:inline-block">
                         מחובר
                     </span>
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse sm:hidden mt-2 mr-2"></span>
                 </div>
             </div>
         </header>
 
         <!-- אזור תוכן מרכזי -->
-        <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-4rem)] w-full relative" id="main-content-area">
+        <main class="max-w-[1600px] mx-auto p-2 md:p-4 flex flex-col lg:grid lg:grid-cols-12 gap-2 md:gap-4 flex-1 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] w-full relative overflow-y-auto lg:overflow-hidden" id="main-content-area">
             
-            <!-- עמודה ימנית: וידאו מרצה + רשימת קורסים -->
-            <aside class="lg:col-span-3 xl:col-span-3 flex flex-col gap-3 h-full overflow-hidden">
+            <!-- עמודה שמאלית: וידאו ראשי עם כפתורים מותאמים (במובייל למעלה) -->
+            <section class="lg:col-span-9 xl:col-span-9 flex flex-col order-1 lg:order-2 w-full lg:h-full bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden relative" id="video-section">
+                <!-- נגן ראשי (שומר על יחס 16:9 במובייל) -->
+                <div class="w-full relative pt-[56.25%] lg:pt-0 lg:h-full">
+                    <!-- מצב המתנה -->
+                    <div id="main-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 z-10 p-4">
+                        <div class="w-12 h-12 md:w-20 md:h-20 mb-2 md:mb-4 rounded-full bg-slate-800 flex items-center justify-center shadow-inner">
+                            <i data-lucide="play" class="w-6 h-6 md:w-8 md:h-8 text-slate-600 ml-1"></i>
+                        </div>
+                        <h2 class="text-base md:text-xl font-bold text-slate-300 mb-1 md:mb-2 text-center">ברוכים הבאים לקורס</h2>
+                        <p class="text-[10px] md:text-sm text-slate-400 text-center max-w-md">
+                            בחר שיעור מהתפריט לקבלת פרטים והפעלת ההרצאה.
+                        </p>
+                    </div>
+
+                    <!-- מיכל נגן הוידאו הראשי -->
+                    <div id="main-video-container" class="hidden absolute inset-0 w-full h-full bg-black z-0">
+                        <div class="w-full h-full pointer-events-none" id="main-video-wrapper">
+                            <div id="main-video" class="w-full h-full"></div>
+                        </div>
+                        
+                        <!-- שכבת לחיצה שקופה על כל הוידאו כדי לעצור/להפעיל -->
+                        <div id="video-click-layer" class="absolute inset-0 z-10 cursor-pointer" onclick="togglePlayPause(event)"></div>
+                        
+                        <!-- חלונית המידע (Title) -->
+                        <div id="video-info-overlay" class="absolute top-2 right-2 md:top-4 md:right-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-1 md:px-4 md:py-2 rounded-lg shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none z-20">
+                            <h3 id="current-lesson-title" class="text-xs md:text-sm font-bold text-blue-400"></h3>
+                            <p id="current-lesson-type" class="text-[8px] md:text-[10px] text-slate-400 mt-0.5 hidden sm:block"></p>
+                        </div>
+
+                        <!-- סרגל הכלים המותאם אישית (Custom Controls) -->
+                        <div id="custom-controls" class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-700/50 px-2 py-2 md:px-5 md:py-3 flex items-center gap-2 md:gap-5 z-30 transition-all duration-300 transform translate-y-0 opacity-100" dir="ltr" onclick="event.stopPropagation()">
+                            
+                            <!-- כפתור פליי / פאוז -->
+                            <button onclick="togglePlayPause(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                                <i data-lucide="pause" class="w-4 h-4 md:w-6 md:h-6" id="icon-play-pause"></i>
+                            </button>
+                            
+                            <!-- אזור ווליום (מוסתר במובייל קטן מאוד) -->
+                            <div class="hidden sm:flex items-center gap-1 md:gap-2">
+                                <button onclick="toggleMute(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                                    <i data-lucide="volume-2" class="w-4 h-4 md:w-5 md:h-5" id="icon-volume"></i>
+                                </button>
+                                <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-16 md:w-24" oninput="changeVolume(this.value)">
+                            </div>
+                            
+                            <!-- אזור התקדמות -->
+                            <div class="flex-1 flex items-center gap-1 md:gap-3">
+                                <span id="time-current" class="text-[10px] md:text-xs text-slate-300 font-mono w-8 md:w-10 text-right">00:00</span>
+                                <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="flex-1" 
+                                       onmousedown="isSeeking=true" 
+                                       onmouseup="isSeeking=false"
+                                       onchange="seekVideo(this.value)"
+                                       oninput="isSeeking=true">
+                                <span id="time-total" class="text-[10px] md:text-xs text-slate-300 font-mono w-8 md:w-10 text-left">00:00</span>
+                            </div>
+                            
+                            <!-- מסך מלא -->
+                            <button onclick="toggleFullScreen(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none ml-1 md:ml-2">
+                                <i data-lucide="maximize" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- עמודה ימנית: וידאו מרצה + רשימת קורסים (במובייל למטה) -->
+            <aside class="lg:col-span-3 xl:col-span-3 flex flex-col gap-2 md:gap-3 order-2 lg:order-1 lg:h-full w-full">
                 <!-- נגן וידאו קטן (מרצה) -->
-                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-xl relative aspect-video flex-shrink-0 flex items-center justify-center">
+                <div class="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-xl relative aspect-video flex-shrink-0 flex items-center justify-center w-full sm:w-1/2 lg:w-full mx-auto">
                     <div id="instructor-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400 z-10 transition-opacity">
-                        <i data-lucide="video" class="w-8 h-8 mb-2 opacity-20"></i>
-                        <p class="text-xs font-medium">מצלמת מרצה</p>
+                        <i data-lucide="video" class="w-6 h-6 md:w-8 md:h-8 mb-1 md:mb-2 opacity-20"></i>
+                        <p class="text-[10px] md:text-xs font-medium">מצלמת מרצה</p>
                     </div>
                     <div id="instructor-video-wrapper" class="hidden absolute inset-0 w-full h-full pointer-events-none z-0">
-                        <div id="instructor-video"></div>
+                        <div id="instructor-video" class="w-full h-full"></div>
                     </div>
-                    <div id="instructor-label" class="hidden absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-medium border border-white/10 z-20">
+                    <div id="instructor-label" class="hidden absolute top-1 right-1 md:top-2 md:right-2 bg-black/60 backdrop-blur-md px-1 py-0.5 md:px-1.5 md:py-0.5 rounded text-[8px] md:text-[10px] font-medium border border-white/10 z-20">
                         המרצה
                     </div>
                 </div>
 
                 <!-- רשימת קורסים -->
-                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-800 shadow-xl flex flex-col overflow-hidden">
-                    <div class="p-3 border-b border-slate-800 bg-slate-800/20 flex-shrink-0 flex flex-col gap-2.5">
-                        <h2 class="text-sm font-bold text-white">סינון לפי מיומנות</h2>
-                        <div class="flex flex-wrap gap-1.5 text-[10px] font-medium">
-                            <button id="filter-ai" onclick="toggleFilter('ai')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">אוריינות AI</button>
-                            <button id="filter-research" onclick="toggleFilter('research')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">מחקר ולמידה</button>
-                            <button id="filter-management" onclick="toggleFilter('management')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">ניהול משימות</button>
-                            <button id="filter-innovation" onclick="toggleFilter('innovation')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">חדשנות ופיתוח</button>
-                            <button id="filter-design" onclick="toggleFilter('design')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-1 rounded-md transition-colors border border-transparent">עיצוב וגרפיקה</button>
+                <div class="flex-1 bg-slate-900 rounded-xl border border-slate-800 shadow-xl flex flex-col overflow-hidden min-h-[300px]">
+                    <div class="p-2 md:p-3 border-b border-slate-800 bg-slate-800/20 flex-shrink-0 flex flex-col gap-2">
+                        <h2 class="text-xs md:text-sm font-bold text-white">סינון לפי מיומנות</h2>
+                        <div class="flex flex-wrap gap-1 text-[9px] md:text-[10px] font-medium">
+                            <button id="filter-ai" onclick="toggleFilter('ai')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-1.5 md:px-2 py-1 rounded-md transition-colors border border-transparent">אוריינות AI</button>
+                            <button id="filter-research" onclick="toggleFilter('research')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-1.5 md:px-2 py-1 rounded-md transition-colors border border-transparent">מחקר ולמידה</button>
+                            <button id="filter-management" onclick="toggleFilter('management')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-1.5 md:px-2 py-1 rounded-md transition-colors border border-transparent">ניהול משימות</button>
+                            <button id="filter-innovation" onclick="toggleFilter('innovation')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-1.5 md:px-2 py-1 rounded-md transition-colors border border-transparent">חדשנות ופיתוח</button>
+                            <button id="filter-design" onclick="toggleFilter('design')" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-1.5 md:px-2 py-1 rounded-md transition-colors border border-transparent">עיצוב וגרפיקה</button>
                         </div>
                     </div>
-                    <div id="lesson-list" class="flex-1 p-1.5 flex flex-col gap-0.5 overflow-y-auto custom-scrollbar">
+                    <div id="lesson-list" class="flex-1 p-1 flex flex-col gap-0.5 overflow-y-auto custom-scrollbar">
                         <!-- פריטי הרשימה ייווצרו כאן -->
                     </div>
                 </div>
             </aside>
-
-            <!-- עמודה שמאלית: וידאו ראשי עם כפתורים מותאמים -->
-            <section class="lg:col-span-9 xl:col-span-9 flex flex-col h-full bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden relative" id="video-section">
-                
-                <!-- מצב המתנה -->
-                <div id="main-placeholder" class="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-slate-900/50 z-10 relative">
-                    <div class="w-20 h-20 mb-4 rounded-full bg-slate-800 flex items-center justify-center shadow-inner">
-                        <i data-lucide="play" class="w-8 h-8 text-slate-600 ml-1"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-slate-300 mb-2">ברוכים הבאים לקורס</h2>
-                    <p class="text-sm text-slate-400 text-center max-w-md">
-                        כדי להתחיל בלמידה, אנא בחר שיעור מהתפריט שמימין לקבלת פרטים והפעלת ההרצאה.
-                    </p>
-                </div>
-
-                <!-- מיכל נגן הוידאו הראשי -->
-                <div id="main-video-container" class="hidden absolute inset-0 w-full h-full bg-black z-0">
-                    
-                    <!-- הנגן עצמו (חוסמים לו את אפשרות הלחיצה כדי להשתלט עם השכבה שלנו) -->
-                    <div class="w-full h-full pointer-events-none" id="main-video-wrapper">
-                        <div id="main-video"></div>
-                    </div>
-                    
-                    <!-- שכבת לחיצה שקופה על כל הוידאו כדי לעצור/להפעיל -->
-                    <div id="video-click-layer" class="absolute inset-0 z-10 cursor-pointer" onclick="togglePlayPause(event)"></div>
-                    
-                    <!-- חלונית המידע (Title) -->
-                    <div id="video-info-overlay" class="absolute top-4 right-4 bg-slate-900/90 backdrop-blur border border-slate-700 px-4 py-2 rounded-lg shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none z-20">
-                        <h3 id="current-lesson-title" class="text-sm font-bold text-blue-400"></h3>
-                        <p id="current-lesson-type" class="text-[10px] text-slate-400 mt-0.5"></p>
-                    </div>
-
-                    <!-- סרגל הכלים המותאם אישית (Custom Controls) -->
-                    <div id="custom-controls" class="absolute bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur border-t border-slate-700/50 px-5 py-3 flex items-center gap-5 z-30 transition-all duration-300 transform translate-y-0 opacity-100" dir="ltr" onclick="event.stopPropagation()">
-                        
-                        <!-- כפתור פליי / פאוז -->
-                        <button onclick="togglePlayPause(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
-                            <i data-lucide="pause" class="w-6 h-6" id="icon-play-pause"></i>
-                        </button>
-                        
-                        <!-- אזור ווליום -->
-                        <div class="flex items-center gap-2">
-                            <button onclick="toggleMute(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
-                                <i data-lucide="volume-2" class="w-5 h-5" id="icon-volume"></i>
-                            </button>
-                            <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-24" oninput="changeVolume(this.value)">
-                        </div>
-                        
-                        <!-- אזור התקדמות -->
-                        <div class="flex-1 flex items-center gap-3">
-                            <span id="time-current" class="text-xs text-slate-300 font-mono w-10 text-right">00:00</span>
-                            <input type="range" id="progress-bar" min="0" max="100" value="0" step="0.1" class="flex-1" 
-                                   onmousedown="isSeeking=true" 
-                                   onmouseup="isSeeking=false"
-                                   onchange="seekVideo(this.value)"
-                                   oninput="isSeeking=true">
-                            <span id="time-total" class="text-xs text-slate-300 font-mono w-10 text-left">00:00</span>
-                        </div>
-                        
-                        <!-- מסך מלא -->
-                        <button onclick="toggleFullScreen(event)" class="text-white hover:text-blue-400 transition-colors focus:outline-none ml-2">
-                            <i data-lucide="maximize" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
 
     <!-- חלון צף (Modal) לפרטי השיעור -->
-    <div id="lesson-modal" class="hidden fixed inset-0 z-[150] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
-            <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-full p-1.5 transition-colors">
-                <i data-lucide="x" class="w-5 h-5"></i>
+    <div id="lesson-modal" class="hidden fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm flex items-center justify-center p-2 md:p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg p-4 md:p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal()" class="absolute top-2 left-2 md:top-4 md:left-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-full p-1.5 md:p-1.5 transition-colors z-10">
+                <i data-lucide="x" class="w-4 h-4 md:w-5 md:h-5"></i>
             </button>
-            <div class="flex items-center gap-3 mb-5 pr-2">
-                <span id="modal-icon" class="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold"></span>
+            <div class="flex items-center gap-2 md:gap-3 mb-3 md:mb-5 pr-2 flex-shrink-0">
+                <span id="modal-icon" class="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center text-base md:text-lg font-bold"></span>
                 <div>
-                    <h2 id="modal-title" class="text-xl font-bold text-white"></h2>
-                    <p id="modal-type" class="text-xs text-slate-400 mt-0.5"></p>
+                    <h2 id="modal-title" class="text-base md:text-xl font-bold text-white leading-tight"></h2>
+                    <p id="modal-type" class="text-[10px] md:text-xs text-slate-400 mt-0.5"></p>
                 </div>
             </div>
-            <div class="bg-slate-800/40 rounded-xl p-4 mb-6 border border-slate-700/50">
-                <h3 id="modal-info-title" class="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                    <i data-lucide="info" class="w-4 h-4 text-blue-400"></i> מה נלמד בשיעור זה?
+            <div class="bg-slate-800/40 rounded-xl p-3 md:p-4 mb-4 md:mb-6 border border-slate-700/50 flex-1 overflow-y-auto custom-scrollbar">
+                <h3 id="modal-info-title" class="text-xs md:text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                    <i data-lucide="info" class="w-3 h-3 md:w-4 md:h-4 text-blue-400"></i> מה נלמד בשיעור זה?
                 </h3>
-                <p id="modal-desc" class="text-sm text-slate-400 leading-relaxed"></p>
+                <p id="modal-desc" class="text-[11px] md:text-sm text-slate-400 leading-relaxed"></p>
             </div>
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <button id="modal-btn-presentation" onclick="openResource('presentation')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors cursor-pointer">
-                    <i data-lucide="file-text" class="w-4 h-4 text-red-400"></i><span>מצגת הקורס</span>
+            <div class="grid grid-cols-2 gap-2 md:gap-3 mb-3 md:mb-4 flex-shrink-0">
+                <button id="modal-btn-presentation" onclick="openResource('presentation')" class="flex items-center justify-center gap-1.5 md:gap-2 bg-slate-800 hover:bg-slate-700 text-xs md:text-sm py-2 md:py-2.5 rounded-xl border border-slate-700 transition-colors cursor-pointer">
+                    <i data-lucide="file-text" class="w-3 h-3 md:w-4 md:h-4 text-red-400"></i><span>מצגת הקורס</span>
                 </button>
-                <button id="modal-btn-workbook" onclick="openResource('workbook')" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm py-2.5 rounded-xl border border-slate-700 transition-colors cursor-pointer">
-                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i><span>חוברת תרגול</span>
+                <button id="modal-btn-workbook" onclick="openResource('workbook')" class="flex items-center justify-center gap-1.5 md:gap-2 bg-slate-800 hover:bg-slate-700 text-xs md:text-sm py-2 md:py-2.5 rounded-xl border border-slate-700 transition-colors cursor-pointer">
+                    <i data-lucide="book-open" class="w-3 h-3 md:w-4 md:h-4 text-emerald-400"></i><span>חוברת תרגול</span>
                 </button>
             </div>
-            <button id="modal-play-btn" onclick="playFromModal()" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all cursor-pointer">
-                <i data-lucide="play" class="w-5 h-5"></i><span id="modal-play-text">התחל צפייה</span>
+            <button id="modal-play-btn" onclick="playFromModal()" class="w-full flex items-center justify-center gap-2 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base transition-all cursor-pointer flex-shrink-0">
+                <i data-lucide="play" class="w-4 h-4 md:w-5 md:h-5"></i><span id="modal-play-text">התחל צפייה</span>
             </button>
         </div>
     </div>
